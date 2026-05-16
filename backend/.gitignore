@@ -46,6 +46,9 @@ lerna-debug.log*
 .temp
 .tmp
 
+# backend guide
+backend-guide.md
+
 # Runtime data
 pids
 *.pid
