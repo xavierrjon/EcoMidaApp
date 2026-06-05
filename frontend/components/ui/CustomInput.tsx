@@ -17,12 +17,17 @@ interface Props {
   placeholder: string;
   icon: keyof typeof Feather.glyphMap;
   secureTextEntry?: boolean;
+
+  value: string;
+  onChangeText: (text: string) => void;
 }
 
 export default function CustomInput({
   placeholder,
   icon,
   secureTextEntry,
+  value,
+  onChangeText,
 }: Props) {
 
   const [isFocused, setIsFocused] =
@@ -54,6 +59,8 @@ export default function CustomInput({
         style={styles.input}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
+        value={value}
+        onChangeText={onChangeText}
       />
 
       {secureTextEntry && (
@@ -82,14 +89,14 @@ const styles = StyleSheet.create({
 
   container: {
     backgroundColor: "#F3F4F6",
-    borderRadius: 40,
+    borderRadius: 28,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 18,
-    paddingVertical: 13,
-    marginBottom: 18,
+    paddingVertical: 10,
+    marginBottom: 16,
     borderWidth: 1.5,
-    borderColor: "transparent",
+    borderColor: "transparent", 
   },
 
   focused: {

@@ -19,7 +19,51 @@ import { Feather } from "@expo/vector-icons";
 import CustomInput from "@/components/ui/CustomInput";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
+import { useState } from "react";
+
 export default function RegisterScreen() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleRegister = () => {
+    setError("");
+
+    if (!name.trim()) {
+      setError("Informe seu nome.");
+      return;
+    }
+
+    if (!email.trim()) {
+      setError("Informe seu email.");
+      return;
+    }
+
+    if (!email.includes("@")) {
+      setError("Informe um email válido.");
+      return;
+    }
+
+    if (!password.trim()) {
+      setError("Informe sua senha.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("A senha deve possuir pelo menos 6 caracteres.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("As senhas não coincidem.");
+      return;
+    }
+
+    console.log("Cadastro válido");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -27,21 +71,11 @@ export default function RegisterScreen() {
         onPress={Keyboard.dismiss}
       >
 
-        <KeyboardAvoidingView
-          style={styles.container}
-          behavior={
-            Platform.OS === "ios"
-              ? "padding"
-              : "height"
-          }
-          keyboardVerticalOffset={20}
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-
-          <ScrollView
-            contentContainerStyle={styles.scroll}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
 
             <View style={styles.header}>
 
@@ -67,30 +101,46 @@ export default function RegisterScreen() {
               <View style={styles.form}>
 
                 <CustomInput
-                  placeholder="Nome"
+                  placeholder="Nome completo"
                   icon="user"
+                  value={name}
+                  onChangeText={setName}
                 />
 
                 <CustomInput
                   placeholder="Email"
                   icon="mail"
+                  value={email}
+                  onChangeText={setEmail}
                 />
 
                 <CustomInput
                   placeholder="Senha"
                   icon="lock"
                   secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
                 />
 
                 <CustomInput
                   placeholder="Confirmar senha"
                   icon="lock"
                   secureTextEntry
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
                 />
+
+                {error ? (
+                  <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>
+                      ⚠ {error}
+                    </Text>
+                  </View>
+                ) : null}
 
                 <PrimaryButton
                   title="Cadastrar"
-                  onPress={() => {}}
+                  onPress={handleRegister}
                 />
 
                 <TouchableOpacity
@@ -99,7 +149,10 @@ export default function RegisterScreen() {
                   }
                 >
                   <Text style={styles.login}>
-                    Já possui conta? Entrar
+                    Já possui conta?
+                    <Text style={styles.loginHighlight}>
+                      {" "}Entrar
+                    </Text>
                   </Text>
                 </TouchableOpacity>
 
@@ -108,8 +161,6 @@ export default function RegisterScreen() {
             </View>
 
           </ScrollView>
-
-        </KeyboardAvoidingView>
 
       </TouchableWithoutFeedback>
 
@@ -148,7 +199,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     paddingTop: 42,
     paddingBottom: 36,
-    minHeight: "82%",
+    minHeight: "75%",
   },
 
   title: {
@@ -163,12 +214,32 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
+  errorContainer: {
+    backgroundColor: "#FEE2E2",
+    borderColor: "#FECACA",
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    marginBottom: 16,
+  },
+
+  errorText: {
+    color: "#DC2626",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+
   login: {
     textAlign: "center",
-    marginTop: 28,
-    color: "#166534",
-    fontWeight: "700",
+    marginTop: 20,
+    color: "#6B7280",
     fontSize: 15,
+  },
+
+  loginHighlight: {
+    color: "#22C55E",
+    fontWeight: "700",
   },
 
 });

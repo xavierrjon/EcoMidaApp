@@ -17,22 +17,40 @@ import { router } from "expo-router";
 import CustomInput from "@/components/ui/CustomInput";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
+import { useState } from "react";
+
 export default function LoginScreen() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = () => {
+    setError("");
+
+    if (!email.trim()) {
+      setError("Informe seu email.");
+      return;
+    }
+
+    if (!email.includes("@")) {
+      setError("Informe um email válido.");
+      return;
+   }
+
+    if (!password.trim()) {
+      setError("Informe sua senha.");
+      return;
+    }
+
+    console.log("Login válido");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
 
       <TouchableWithoutFeedback
         onPress={Keyboard.dismiss}
       >
-
-        <KeyboardAvoidingView
-          style={styles.container}
-          behavior={
-            Platform.OS === "ios"
-              ? "padding"
-              : "height"
-          }
-        >
 
           <ScrollView
             contentContainerStyle={styles.scroll}
@@ -63,32 +81,49 @@ export default function LoginScreen() {
                 <CustomInput
                   placeholder="Email"
                   icon="mail"
+                  value={email}
+                  onChangeText={setEmail}
                 />
 
                 <CustomInput
                   placeholder="Senha"
                   icon="lock"
                   secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
                 />
 
-                <TouchableOpacity>
-                  <Text style={styles.forgot}>
-                    Esqueceu a senha?
-                  </Text>
-                </TouchableOpacity>
+                {error ? (
+                  <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>
+                      ⚠ {error}
+                    </Text>
+                  </View>
+                ) : null}
 
                 <PrimaryButton
                   title="Entrar"
-                  onPress={() => {}}
+                  onPress={handleLogin}
                 />
 
+              </View>
+
+              <View style={styles.footer}>
+
+                <TouchableOpacity>
+                  <Text style={styles.forgot}>
+                    Esqueceu sua senha?
+                  </Text>
+                </TouchableOpacity>
+
                 <TouchableOpacity
-                  onPress={() =>
-                    router.push("/register")
-                  }
+                  onPress={() => router.push("/register")}
                 >
                   <Text style={styles.register}>
-                    Não possui conta? Cadastre-se
+                    Não possui conta?
+                    <Text style={styles.registerHighlight}>
+                      {" "}Cadastre-se
+                    </Text>
                   </Text>
                 </TouchableOpacity>
 
@@ -97,8 +132,6 @@ export default function LoginScreen() {
             </View>
 
           </ScrollView>
-
-        </KeyboardAvoidingView>
 
       </TouchableWithoutFeedback>
 
@@ -137,42 +170,63 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    flex: 1,
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 36,
     borderTopRightRadius: 36,
     paddingHorizontal: 28,
     paddingTop: 42,
-    paddingBottom: 36,
-    minHeight: "72%",
+    paddingBottom: 48,
+    minHeight: "70%",
   },
 
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "700",
     color: "#111827",
     textAlign: "center",
-    marginBottom: 36,
+    marginBottom: 32,
   },
 
   form: {
     width: "100%",
   },
 
+  footer: {
+    marginTop: 60,
+    alignItems: "center",
+  },
+
   forgot: {
-    alignSelf: "flex-end",
-    color: "#166534",
-    fontWeight: "600",
-    marginBottom: 28,
-    marginTop: -4,
+    color: "#6B7280",
+    fontSize: 15,
+    fontWeight: "500",
+    marginBottom: 10,
   },
 
   register: {
-    textAlign: "center",
-    marginTop: 28,
-    color: "#166534",
-    fontWeight: "700",
+    color: "#6B7280",
     fontSize: 15,
+  },
+
+  registerHighlight: {
+    color: "#22C55E",
+    fontWeight: "700",
+  },
+
+  errorContainer: {
+    backgroundColor: "#fee2e2",
+    borderColor: "#fecaca",
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    marginBottom: 16,
+  },
+
+  errorText: {
+  color: "#DC2626",
+  fontSize: 14,
+  fontWeight: "500",
   },
 
 });
