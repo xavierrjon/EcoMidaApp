@@ -67,15 +67,18 @@ export default function RegisterScreen() {
   return (
     <SafeAreaView style={styles.container}>
 
-      <TouchableWithoutFeedback
-        onPress={Keyboard.dismiss}
-      >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
+
+          <ScrollView
+            contentContainerStyle={styles.scroll}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
 
             <View style={styles.header}>
 
@@ -161,7 +164,8 @@ export default function RegisterScreen() {
             </View>
 
           </ScrollView>
-
+        </KeyboardAvoidingView>
+        
       </TouchableWithoutFeedback>
 
     </SafeAreaView>
@@ -203,7 +207,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "700",
     color: "#111827",
     textAlign: "center",
