@@ -61,7 +61,7 @@ export default function RegisterScreen() {
       return;
     }
 
-    console.log("Cadastro válido");
+    router.replace("/(tabs)/home");
   };
 
   return (

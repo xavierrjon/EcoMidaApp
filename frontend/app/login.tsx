@@ -42,7 +42,7 @@ export default function LoginScreen() {
       return;
     }
 
-    console.log("Login válido");
+    router.replace("/(tabs)/home");
   };
 
   return (
