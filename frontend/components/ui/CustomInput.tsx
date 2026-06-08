@@ -3,6 +3,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  KeyboardTypeOptions,
 } from "react-native";
 
 import {
@@ -15,8 +16,14 @@ import {
 
 interface Props {
   placeholder: string;
-  icon: keyof typeof Feather.glyphMap;
+
+  placeholderColor?: string;
+
+  icon?: keyof typeof Feather.glyphMap;
+
   secureTextEntry?: boolean;
+
+  keyboardType?: KeyboardTypeOptions;
 
   value: string;
   onChangeText: (text: string) => void;
@@ -24,8 +31,10 @@ interface Props {
 
 export default function CustomInput({
   placeholder,
+  placeholderColor,
   icon,
   secureTextEntry,
+  keyboardType,
   value,
   onChangeText,
 }: Props) {
@@ -44,19 +53,25 @@ export default function CustomInput({
       ]}
     >
 
-      <Feather
-        name={icon}
-        size={20}
-        color="#166534"
-      />
+      {icon && (
+        <Feather
+          name={icon}
+          size={20}
+          color="#166534"
+        />
+      )}
 
       <TextInput
         placeholder={placeholder}
-        placeholderTextColor="#4B5563"
+        placeholderTextColor={placeholderColor || "#9CA3AF"}
         secureTextEntry={
           secureTextEntry && hidePassword
         }
-        style={styles.input}
+        keyboardType={keyboardType}
+        style={[
+          styles.input,
+          !icon && styles.inputWithoutIcon,
+        ]}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         value={value}
@@ -96,7 +111,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 16,
     borderWidth: 1.5,
-    borderColor: "transparent", 
+    borderColor: "transparent",
   },
 
   focused: {
@@ -109,6 +124,10 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     fontSize: 16,
     color: "#111827",
+  },
+
+  inputWithoutIcon: {
+    marginLeft: 0,
   },
 
 });

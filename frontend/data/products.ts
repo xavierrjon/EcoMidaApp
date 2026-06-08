@@ -1,11 +1,4 @@
-export interface Product {
-  id: string;
-  name: string;
-  category: string;
-  quantity: number;
-  expirationDate: string;
-  status: "ativo" | "consumido" | "descartado";
-}
+import { Product } from "@/types/product";
 
 export const products: Product[] = [
   {
@@ -13,6 +6,7 @@ export const products: Product[] = [
     name: "Leite Líquido",
     category: "Laticínio",
     quantity: 2,
+    unit: "Litro",
     expirationDate: "15/06/2026",
     status: "ativo",
   },
@@ -22,6 +16,7 @@ export const products: Product[] = [
     name: "Alface",
     category: "Legume",
     quantity: 1,
+    unit: "Unidade",
     expirationDate: "08/06/2026",
     status: "ativo",
   },
@@ -31,6 +26,7 @@ export const products: Product[] = [
     name: "Pão Integral",
     category: "Padaria",
     quantity: 3,
+    unit: "Unidade",
     expirationDate: "05/06/2026",
     status: "consumido",
   },
@@ -40,6 +36,7 @@ export const products: Product[] = [
     name: "Suco de Laranja",
     category: "Bebida",
     quantity: 1,
+    unit: "Litro",
     expirationDate: "02/06/2026",
     status: "descartado",
   },

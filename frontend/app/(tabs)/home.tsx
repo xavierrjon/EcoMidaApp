@@ -4,17 +4,22 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { useState } from "react";
 
 import { products } from "@/data/products";
 
 import ProductCard from "@/components/home/ProductCard";
+
+import AddProductModal from "@/components/home/AddProductModal";
+
+import { router } from "expo-router";
 
 export default function HomeScreen() {
   const [activeTab, setActiveTab] =
@@ -45,6 +50,9 @@ export default function HomeScreen() {
       return product.status === "descartado";
     }
   );
+
+  const [modalVisible, setModalVisible] =
+  useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -150,7 +158,11 @@ export default function HomeScreen() {
 
       </View>
 
-      <View style={styles.productsContainer}>
+      <ScrollView
+        style={styles.productsContainer}
+        contentContainerStyle={styles.productsContent}
+        showsVerticalScrollIndicator={false}
+      >
 
         {filteredProducts.map(
           (product) => (
@@ -159,15 +171,31 @@ export default function HomeScreen() {
               name={product.name}
               category={product.category}
               quantity={product.quantity}
-              expirationDate={
-                product.expirationDate
-              }
+              expirationDate={product.expirationDate}
               status={product.status}
             />
           )
         )}
 
-      </View>
+      </ScrollView>
+
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => setModalVisible(true)
+      }
+      >
+        <Feather
+          name="plus"
+          size={30}
+          color="#FFF"
+        />
+
+      <AddProductModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
+
+      </TouchableOpacity>
 
     </SafeAreaView>
   );
@@ -242,8 +270,30 @@ const styles = StyleSheet.create({
   },
 
   productsContainer: {
-    paddingHorizontal: 24,
+    flex: 1,
     marginTop: 20,
+  },
+
+  productsContent: {
+    paddingHorizontal: 24,
+    paddingBottom: 140,
+  },
+
+  fab: {
+    position: "absolute",
+    bottom: 110,
+    right: 24,
+
+    width: 64,
+    height: 64,
+
+    borderRadius: 32,
+    backgroundColor: "#22C55E",
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    elevation: 8,
   },
 
 });
