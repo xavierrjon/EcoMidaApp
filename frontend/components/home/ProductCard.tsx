@@ -13,6 +13,10 @@ interface ProductCardProps {
   quantity: number;
   expirationDate: string;
   status: "ativo" | "consumido" | "descartado";
+
+  onConsume?: () => void;
+  onDiscard?: () => void;
+  onReactivate?: () => void;
 }
 
 const getCategoryIcon = (
@@ -45,98 +49,223 @@ const getCategoryIcon = (
   }
 };
 
+const getExpirationStatus = (
+  expirationDate: string
+) => {
+  const [day, month, year] =
+    expirationDate.split("/");
+
+  const expiration = new Date(
+    Number(year),
+    Number(month) - 1,
+    Number(day)
+  );
+
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  expiration.setHours(0, 0, 0, 0);
+
+  const diffDays = Math.ceil(
+    (expiration.getTime() -
+      today.getTime()) /
+      (1000 * 60 * 60 * 24)
+  );
+
+  if (diffDays < 0) {
+    return "expired";
+  }
+
+  if (diffDays <= 3) {
+    return "warning";
+  }
+
+  return "valid";
+};
+
 export default function ProductCard({
   name,
   category,
   quantity,
   expirationDate,
   status,
+  onConsume,
+  onDiscard,
+  onReactivate,
 }: ProductCardProps) {
+  const expirationStatus =
+    getExpirationStatus(
+      expirationDate
+    );
+
+  const iconColor =
+    expirationStatus === "expired"
+      ? "#EF4444"
+      : expirationStatus === "warning"
+      ? "#F59E0B"
+      : "#22C55E";
+
+  const iconBackground =
+    expirationStatus === "expired"
+      ? "#FEE2E2"
+      : expirationStatus === "warning"
+      ? "#FEF3C7"
+      : "#DCFCE7";
+
   return (
     <View style={styles.card}>
-
-        <View style={styles.header}>
-
-            <View style={styles.iconContainer}>
-            <MaterialCommunityIcons
-                name={getCategoryIcon(category)}
-                size={28}
-                color="#22C55E"
-            />
-            </View>
-
-            <View style={styles.info}>
-
-            <Text style={styles.name}>
-                {name}
-            </Text>
-
-            <View style={styles.categoryBadge}>
-                <Text style={styles.categoryBadgeText}>
-                {category}
-                </Text>
-            </View>
-
-            </View>
-
+      <View style={styles.header}>
+        <View
+          style={[
+            styles.iconContainer,
+            {
+              backgroundColor:
+                iconBackground,
+            },
+          ]}
+        >
+          <MaterialCommunityIcons
+            name={getCategoryIcon(category)}
+            size={28}
+            color={iconColor}
+          />
         </View>
 
-        <View style={styles.details}>
+        <View style={styles.info}>
+          <Text style={styles.name}>
+            {name}
+          </Text>
 
-            <View style={styles.detailRow}>
-            <MaterialCommunityIcons
-                name="package-variant-closed"
-                size={18}
-                color="#6B7280"
-            />
-
-            <Text style={styles.detail}>
-                {quantity} unidade(s)
+          <View
+            style={[
+              styles.categoryBadge,
+              {
+                backgroundColor:
+                  iconBackground,
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.categoryBadgeText,
+                {
+                  color: iconColor,
+                },
+              ]}
+            >
+              {category}
             </Text>
-            </View>
+          </View>
+        </View>
+      </View>
 
-            <View style={styles.detailRow}>
-            <MaterialCommunityIcons
-                name="calendar-outline"
-                size={18}
-                color="#6B7280"
-            />
+      <View style={styles.details}>
+        <View style={styles.detailRow}>
+          <MaterialCommunityIcons
+            name="package-variant-closed"
+            size={18}
+            color="#6B7280"
+          />
 
-            <Text style={styles.detail}>
-                {expirationDate}
-            </Text>
-            </View>
-
+          <Text style={styles.detail}>
+            {quantity} unidade(s)
+          </Text>
         </View>
 
-        {status === "ativo" && (
-            <View style={styles.actions}>
+        <View style={styles.detailRow}>
+          <MaterialCommunityIcons
+            name="calendar-outline"
+            size={18}
+            color="#6B7280"
+          />
 
-            <TouchableOpacity
-                style={styles.consumeButton}
-            >
-                <Text style={styles.consumeText}>
-                Consumir
-                </Text>
-            </TouchableOpacity>
+          <Text style={styles.detail}>
+            {expirationDate}
+          </Text>
+        </View>
 
-            <TouchableOpacity
-                style={styles.discardButton}
-            >
-                <Text style={styles.discardText}>
-                Descartar
-                </Text>
-            </TouchableOpacity>
+        {status === "ativo" &&
+          expirationStatus === "warning" && (
+            <View style={styles.warningBadge}>
+              <MaterialCommunityIcons
+                name="clock-alert-outline"
+                size={16}
+                color="#D97706"
+              />
 
+              <Text style={styles.warningBadgeText}>
+                Vence em breve
+              </Text>
             </View>
         )}
 
+        {status === "ativo" &&
+          expirationStatus === "expired" && (
+            <View style={styles.expiredBadge}>
+              <MaterialCommunityIcons
+                name="alert-circle-outline"
+                size={16}
+                color="#DC2626"
+              />
+
+              <Text style={styles.expiredBadgeText}>
+                Produto vencido
+              </Text>
+            </View>
+        )}
+      </View>
+
+      {status === "ativo" && (
+        <View style={styles.actions}>
+          <TouchableOpacity
+            style={
+              styles.consumeButton
+            }
+            onPress={onConsume}
+          >
+            <Text
+              style={styles.consumeText}
+            >
+              Consumir
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={
+              styles.discardButton
+            }
+            onPress={onDiscard}
+          >
+            <Text
+              style={styles.discardText}
+            >
+              Descartar
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {status !== "ativo" && (
+        <View style={styles.actions}>
+          <TouchableOpacity
+            style={styles.reactivateButton}
+            onPress={onReactivate}
+          >
+            <Text
+              style={
+                styles.reactivateText
+              }
+            >
+              Reativar
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
   card: {
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
@@ -163,7 +292,6 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 16,
-    backgroundColor: "#DCFCE7",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -174,7 +302,6 @@ const styles = StyleSheet.create({
 
   categoryBadge: {
     alignSelf: "flex-start",
-    backgroundColor: "#DCFCE7",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 999,
@@ -182,7 +309,6 @@ const styles = StyleSheet.create({
   },
 
   categoryBadgeText: {
-    color: "#166534",
     fontSize: 12,
     fontWeight: "600",
   },
@@ -207,6 +333,46 @@ const styles = StyleSheet.create({
   detail: {
     fontSize: 14,
     color: "#374151",
+  },
+
+  warningBadge: {
+  alignSelf: "flex-start",
+  flexDirection: "row",
+  alignItems: "center",
+
+  backgroundColor: "#FEF3C7",
+
+  paddingHorizontal: 10,
+  paddingVertical: 6,
+
+  borderRadius: 999,
+},
+
+  warningBadgeText: {
+    marginLeft: 6,
+    color: "#D97706",
+    fontWeight: "600",
+    fontSize: 12,
+  },
+
+  expiredBadge: {
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+
+    backgroundColor: "#FEE2E2",
+
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+
+    borderRadius: 999,
+  },
+
+  expiredBadgeText: {
+    marginLeft: 6,
+    color: "#DC2626",
+    fontWeight: "600",
+    fontSize: 12,
   },
 
   actions: {
@@ -239,6 +405,19 @@ const styles = StyleSheet.create({
 
   discardText: {
     color: "#EF4444",
+    fontWeight: "600",
+  },
+
+  reactivateButton: {
+    flex: 1,
+    backgroundColor: "#14B8A6",
+    borderRadius: 14,
+    paddingVertical: 13,
+    alignItems: "center",
+  },
+
+  reactivateText: {
+    color: "#FFFFFF",
     fontWeight: "600",
   },
 

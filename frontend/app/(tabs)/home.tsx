@@ -9,32 +9,106 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Feather,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
-import { useState } from "react";
-
-import { products } from "@/data/products";
+import {
+  useState,
+  useEffect,
+} from "react";
 
 import ProductCard from "@/components/home/ProductCard";
 
 import AddProductModal from "@/components/home/AddProductModal";
 
-import { router } from "expo-router";
+import {
+  Product,
+  CreateProductDTO,
+} from "@/types/product";
+
+import {
+  productsService,
+} from "@/services/productsService";
 
 export default function HomeScreen() {
   const [activeTab, setActiveTab] =
     useState("ativos");
 
+  const [products, setProducts] =
+    useState<Product[]>([]);
+
+  const [modalVisible, setModalVisible] =
+    useState(false);
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    const data =
+      await productsService.getAll();
+
+    setProducts(data);
+  };
+
+  const handleAddProduct = async (
+    product: CreateProductDTO
+  ) => {
+    await productsService.create(
+      product
+    );
+
+    loadProducts();
+  };
+
+  const handleConsumeProduct = async (
+    id: string
+  ) => {
+    await productsService.updateStatus(
+      id,
+      "consumido"
+    );
+
+    loadProducts();
+  };
+
+  const handleDiscardProduct = async (
+    id: string
+  ) => {
+    await productsService.updateStatus(
+      id,
+      "descartado"
+    );
+
+    loadProducts();
+  };
+
+  const handleReactivateProduct = async (
+    id: string
+  ) => {
+    await productsService.updateStatus(
+      id,
+      "ativo"
+    );
+
+    loadProducts();
+  };
+
   const activeCount = products.filter(
-    product => product.status === "ativo"
+    (product) =>
+      product.status === "ativo"
   ).length;
 
   const consumedCount = products.filter(
-    product => product.status === "consumido"
+    (product) =>
+      product.status === "consumido"
   ).length;
 
   const discardedCount = products.filter(
-    product => product.status === "descartado"
+    (product) =>
+      product.status === "descartado"
   ).length;
 
   const filteredProducts = products.filter(
@@ -43,22 +117,27 @@ export default function HomeScreen() {
         return product.status === "ativo";
       }
 
-      if (activeTab === "consumidos") {
-        return product.status === "consumido";
+      if (
+        activeTab === "consumidos"
+      ) {
+        return (
+          product.status ===
+          "consumido"
+        );
       }
 
-      return product.status === "descartado";
+      return (
+        product.status ===
+        "descartado"
+      );
     }
   );
 
-  const [modalVisible, setModalVisible] =
-  useState(false);
-
   return (
-    <SafeAreaView style={styles.container}>
-
+    <SafeAreaView
+      style={styles.container}
+    >
       <View style={styles.header}>
-
         <Image
           source={require("../../assets/images/icon.png")}
           style={styles.icon}
@@ -66,8 +145,9 @@ export default function HomeScreen() {
         />
 
         <View style={styles.actions}>
-
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity
+            style={styles.iconButton}
+          >
             <MaterialCommunityIcons
               name="bell-outline"
               size={24}
@@ -75,16 +155,16 @@ export default function HomeScreen() {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity
+            style={styles.iconButton}
+          >
             <MaterialCommunityIcons
               name="account-circle"
               size={26}
               color="#22C55E"
             />
           </TouchableOpacity>
-
         </View>
-
       </View>
 
       <Text style={styles.title}>
@@ -92,12 +172,11 @@ export default function HomeScreen() {
       </Text>
 
       <View style={styles.tabsContainer}>
-
         <TouchableOpacity
           style={[
             styles.tab,
             activeTab === "ativos" &&
-            styles.activeTab,
+              styles.activeTab,
           ]}
           onPress={() =>
             setActiveTab("ativos")
@@ -106,8 +185,9 @@ export default function HomeScreen() {
           <Text
             style={[
               styles.tabText,
-              activeTab === "ativos" &&
-              styles.activeTabText,
+              activeTab ===
+                "ativos" &&
+                styles.activeTabText,
             ]}
           >
             Ativos ({activeCount})
@@ -117,53 +197,67 @@ export default function HomeScreen() {
         <TouchableOpacity
           style={[
             styles.tab,
-            activeTab === "consumidos" &&
-            styles.activeTab,
+            activeTab ===
+              "consumidos" &&
+              styles.activeTab,
           ]}
           onPress={() =>
-            setActiveTab("consumidos")
+            setActiveTab(
+              "consumidos"
+            )
           }
         >
           <Text
             style={[
               styles.tabText,
-              activeTab === "consumidos" &&
-              styles.activeTabText,
+              activeTab ===
+                "consumidos" &&
+                styles.activeTabText,
             ]}
           >
-            Consumidos ({consumedCount})
+            Consumidos (
+            {consumedCount})
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[
             styles.tab,
-            activeTab === "descartados" &&
-            styles.activeTab,
+            activeTab ===
+              "descartados" &&
+              styles.activeTab,
           ]}
           onPress={() =>
-            setActiveTab("descartados")
+            setActiveTab(
+              "descartados"
+            )
           }
         >
           <Text
             style={[
               styles.tabText,
-              activeTab === "descartados" &&
-              styles.activeTabText,
+              activeTab ===
+                "descartados" &&
+                styles.activeTabText,
             ]}
           >
-            Descartados ({discardedCount})
+            Descartados (
+            {discardedCount})
           </Text>
         </TouchableOpacity>
-
       </View>
 
       <ScrollView
-        style={styles.productsContainer}
-        contentContainerStyle={styles.productsContent}
-        showsVerticalScrollIndicator={false}
+        style={
+          styles.productsContainer
+        }
+        contentContainerStyle={
+          styles.productsContent
+        }
+        showsVerticalScrollIndicator={
+          false
+        }
       >
-
         {filteredProducts.map(
           (product) => (
             <ProductCard
@@ -173,36 +267,45 @@ export default function HomeScreen() {
               quantity={product.quantity}
               expirationDate={product.expirationDate}
               status={product.status}
+              onConsume={() =>
+                handleConsumeProduct(product.id)
+              }
+              onDiscard={() =>
+                handleDiscardProduct(product.id)
+              }
+              onReactivate={() =>
+                handleReactivateProduct(product.id)
+              }
             />
           )
         )}
-
       </ScrollView>
 
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => setModalVisible(true)
-      }
+        onPress={() =>
+          setModalVisible(true)
+        }
       >
         <Feather
           name="plus"
           size={30}
           color="#FFF"
         />
+      </TouchableOpacity>
 
       <AddProductModal
         visible={modalVisible}
-        onClose={() => setModalVisible(false)}
+        onClose={() =>
+          setModalVisible(false)
+        }
+        onSave={handleAddProduct}
       />
-
-      </TouchableOpacity>
-
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: "#F9FAFB",
@@ -210,7 +313,8 @@ const styles = StyleSheet.create({
 
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent:
+      "space-between",
     alignItems: "center",
     paddingHorizontal: 24,
     paddingTop: 20,
@@ -288,12 +392,13 @@ const styles = StyleSheet.create({
     height: 64,
 
     borderRadius: 32,
-    backgroundColor: "#22C55E",
+
+    backgroundColor:
+      "#22C55E",
 
     justifyContent: "center",
     alignItems: "center",
 
     elevation: 8,
   },
-
 });

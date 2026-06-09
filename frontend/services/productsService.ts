@@ -49,6 +49,29 @@ export const productsService = {
     return productsMock[index];
   },
 
+  async updateStatus(
+    id: string,
+    status:
+      | "ativo"
+      | "consumido"
+      | "descartado"
+  ): Promise<Product | null> {
+    const index = productsMock.findIndex(
+      (product) => product.id === id
+    );
+
+    if (index === -1) {
+      return null;
+    }
+
+    productsMock[index] = {
+      ...productsMock[index],
+      status,
+    };
+
+    return productsMock[index];
+  },
+
   async delete(
     id: string
   ): Promise<void> {

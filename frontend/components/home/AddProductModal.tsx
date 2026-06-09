@@ -78,33 +78,52 @@ export default function AddProductModal({
     );
   };
 
-  const handleSave = () => {
-    if (
-      !name ||
-      !category ||
-      !quantity ||
-      !unit ||
-      !expirationDate
-    ) {
-      return;
+  const validateForm = () => {
+    if (!name.trim()) {
+      alert("Informe o nome do alimento");
+      return false;
     }
 
-    onSave({
-      name,
-      category,
-      quantity: Number(quantity),
-      unit,
-      expirationDate,
-    });
+    if (!category) {
+      alert("Selecione uma categoria");
+      return false;
+    }
 
-    setName("");
-    setCategory("");
-    setQuantity("");
-    setUnit("");
-    setExpirationDate("");
+    if (!expirationDate) {
+      alert("Selecione a data de validade");
+      return false;
+    }
 
-    onClose();
+    if (!quantity) {
+      alert("Informe a quantidade");
+      return false;
+    }
+
+    if (!unit) {
+      alert("Selecione uma unidade");
+      return false;
+    }
+
+    return true;
   };
+
+  const handleSave = () => {
+  const isValid = validateForm();
+
+  if (!isValid) {
+    return;
+  }
+
+  onSave({
+    name,
+    category,
+    quantity: Number(quantity),
+    unit,
+    expirationDate,
+  });
+
+  onClose();
+}; 
 
   return (
     <Modal
