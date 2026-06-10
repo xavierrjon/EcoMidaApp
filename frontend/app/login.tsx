@@ -1,159 +1,164 @@
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
+  Alert,
   ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { router } from "expo-router";
+import { useState } from "react";
 
 import CustomInput from "@/components/ui/CustomInput";
 import PrimaryButton from "@/components/ui/PrimaryButton";
-
-import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
+  const { signIn, forgotPassword } = useAuth();
+
+  const handleLogin = async () => {
     setError("");
 
-    if (!email.trim()) {
-      setError("Informe seu email.");
-      return;
-    }
-
-    if (!email.includes("@")) {
+    if (!email.trim() || !email.includes("@")) {
       setError("Informe um email válido.");
       return;
-   }
+    }
 
     if (!password.trim()) {
       setError("Informe sua senha.");
       return;
     }
 
-    console.log("Login válido");
+    setIsLoading(true);
+
+    try {
+      await signIn(email, password);
+      router.replace("/(tabs)");
+    } catch (err: any) {
+      setError(err.message || "Ocorreu um erro ao entrar.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email.trim()) {
+      Alert.alert(
+        "Preencha o e-mail",
+        "Digite seu e-mail no campo acima."
+      );
+      return;
+    }
+
+    try {
+      await forgotPassword(email);
+
+      Alert.alert(
+        "Sucesso",
+        "Link de recuperação enviado para seu e-mail."
+      );
+    } catch (err: any) {
+      Alert.alert(
+        "Erro",
+        err.message || "Não foi possível enviar."
+      );
+    }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-
-      <TouchableWithoutFeedback
-        onPress={Keyboard.dismiss}
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
+        <View style={styles.header}>
+          <Text style={styles.hello}>Olá!</Text>
+          <Text style={styles.welcome}>
+            Bem-vindo ao EcoMida
+          </Text>
+        </View>
 
-          <ScrollView
-            contentContainerStyle={styles.scroll}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
+        <View style={styles.card}>
+          <View style={styles.content}>
+            <Text style={styles.title}>Entrar</Text>
 
-            <View style={styles.header}>
+            <CustomInput
+              placeholder="Email"
+              icon="mail"
+              value={email}
+              onChangeText={setEmail}
+            />
 
-              <Text style={styles.hello}>
-                Olá!
-              </Text>
+            <CustomInput
+              placeholder="Senha"
+              icon="lock"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
 
-              <Text style={styles.welcome}>
-                Bem-vindo ao EcoMida
-              </Text>
-
-            </View>
-
-            <View style={styles.card}>
-
-              <Text style={styles.title}>
-                Entrar
-              </Text>
-
-              <View style={styles.form}>
-
-                <CustomInput
-                  placeholder="Email"
-                  icon="mail"
-                  value={email}
-                  onChangeText={setEmail}
-                />
-
-                <CustomInput
-                  placeholder="Senha"
-                  icon="lock"
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                />
-
-                {error ? (
-                  <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>
-                      ⚠ {error}
-                    </Text>
-                  </View>
-                ) : null}
-
-                <PrimaryButton
-                  title="Entrar"
-                  onPress={handleLogin}
-                />
-
+            {error ? (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>
+                  ⚠ {error}
+                </Text>
               </View>
+            ) : null}
 
-              <View style={styles.footer}>
+            <PrimaryButton
+              title="Entrar"
+              onPress={handleLogin}
+              disabled={isLoading}
+              loading={isLoading}
+            />
 
-                <TouchableOpacity>
-                  <Text style={styles.forgot}>
-                    Esqueceu sua senha?
+            <View style={styles.linksContainer}>
+              <TouchableOpacity onPress={handleForgotPassword}>
+                <Text style={styles.forgot}>
+                  Esqueceu sua senha?
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => router.push("/register")}
+              >
+                <Text style={styles.register}>
+                  Não possui conta?
+                  <Text style={styles.registerHighlight}>
+                    {" "}
+                    Cadastre-se
                   </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => router.push("/register")}
-                >
-                  <Text style={styles.register}>
-                    Não possui conta?
-                    <Text style={styles.registerHighlight}>
-                      {" "}Cadastre-se
-                    </Text>
-                  </Text>
-                </TouchableOpacity>
-
-              </View>
-
+                </Text>
+              </TouchableOpacity>
             </View>
-
-          </ScrollView>
-
-      </TouchableWithoutFeedback>
-
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: "#22C55E",
   },
 
-  scroll: {
+  scrollContent: {
     flexGrow: 1,
   },
 
   header: {
     paddingHorizontal: 28,
-    paddingTop: 60,
-    paddingBottom: 45,
+    paddingTop: 70,
+    paddingBottom: 60,
   },
 
   hello: {
@@ -170,13 +175,18 @@ const styles = StyleSheet.create({
   },
 
   card: {
+    flex: 1,
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 36,
     borderTopRightRadius: 36,
     paddingHorizontal: 28,
-    paddingTop: 42,
-    paddingBottom: 48,
-    minHeight: "70%",
+    paddingTop: 56,
+    minHeight: 600,
+  },
+
+  content: {
+    flex: 1,
+    justifyContent: "flex-start",
   },
 
   title: {
@@ -187,25 +197,22 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
 
-  form: {
-    width: "100%",
-  },
-
-  footer: {
-    marginTop: 60,
+  linksContainer: {
+    marginTop: 20,
     alignItems: "center",
+    gap: 10,
   },
 
   forgot: {
     color: "#6B7280",
     fontSize: 15,
     fontWeight: "500",
-    marginBottom: 10,
   },
 
   register: {
     color: "#6B7280",
     fontSize: 15,
+    textAlign: "center",
   },
 
   registerHighlight: {
@@ -214,8 +221,8 @@ const styles = StyleSheet.create({
   },
 
   errorContainer: {
-    backgroundColor: "#fee2e2",
-    borderColor: "#fecaca",
+    backgroundColor: "#FEE2E2",
+    borderColor: "#FECACA",
     borderWidth: 1,
     borderRadius: 12,
     paddingVertical: 10,
@@ -224,9 +231,8 @@ const styles = StyleSheet.create({
   },
 
   errorText: {
-  color: "#DC2626",
-  fontSize: 14,
-  fontWeight: "500",
+    color: "#DC2626",
+    fontSize: 14,
+    fontWeight: "500",
   },
-
 });
