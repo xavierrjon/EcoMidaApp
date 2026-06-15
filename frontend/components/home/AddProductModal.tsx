@@ -107,23 +107,32 @@ export default function AddProductModal({
     return true;
   };
 
+  const resetForm = () => {
+    setName("");
+    setCategory("");
+    setQuantity("");
+    setUnit("");
+    setExpirationDate("");
+    setDate(new Date());
+  };
+
   const handleSave = () => {
-  const isValid = validateForm();
+    const isValid = validateForm();
 
-  if (!isValid) {
-    return;
-  }
+    if (!isValid) return;
 
-  onSave({
-    name,
-    category,
-    quantity: Number(quantity),
-    unit,
-    expirationDate,
-  });
+    onSave({
+      name,
+      category,
+      quantity: Number(quantity),
+      unit,
+      expirationDate,
+    });
 
-  onClose();
-}; 
+    resetForm();
+    onClose();
+
+  };
 
   return (
     <Modal
@@ -270,12 +279,15 @@ export default function AddProductModal({
           <View style={styles.footer}>
 
             <TouchableOpacity
-              onPress={onClose}
-            >
-              <Text style={styles.cancel}>
-                Cancelar
-              </Text>
-            </TouchableOpacity>
+               onPress={() => {
+               resetForm();
+               onClose();
+             }}
+           >
+             <Text style={styles.cancel}>
+               Cancelar
+             </Text>
+           </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.saveButton}

@@ -5,7 +5,10 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  TextInput,
 } from "react-native";
+
+import { router } from "expo-router";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -32,6 +35,9 @@ import {
   productsService,
 } from "@/services/productsService";
 
+import EditProductModal from "@/components/home/EditProductModal";
+import { notificationsService } from "@/services/notificationsService";
+
 export default function HomeScreen() {
   const [activeTab, setActiveTab] =
     useState("ativos");
@@ -47,11 +53,18 @@ export default function HomeScreen() {
   }, []);
 
   const loadProducts = async () => {
-    const data =
-      await productsService.getAll();
+  const data =
+    await productsService.getAll();
 
-    setProducts(data);
-  };
+  setProducts(data);
+
+  const notifications =
+    notificationsService.generate(data);
+
+  setNotificationCount(
+    notifications.length
+  );
+};
 
   const handleAddProduct = async (
     product: CreateProductDTO
@@ -111,27 +124,78 @@ export default function HomeScreen() {
       product.status === "descartado"
   ).length;
 
-  const filteredProducts = products.filter(
-    (product) => {
+  const [selectedProduct, setSelectedProduct] =
+  useState<Product | null>(null);
+
+  const [search, setSearch] = useState("");
+
+  const handleDeleteProduct = async (
+    id: string
+  ) => {
+    await productsService.delete(id);
+
+    loadProducts();
+
+    setSelectedProduct(null);
+  };
+
+  const handleUpdateProduct = async (
+  id: string,
+  data: Partial<Product>
+  ) => {
+  await productsService.update(
+    id,
+    data
+  );
+
+    loadProducts();
+
+    setSelectedProduct(null);
+  };
+
+  const [showDeleteConfirm, setShowDeleteConfirm] =
+  useState(false);
+
+  const [notificationCount, setNotificationCount] =
+  useState(0);
+
+  const convertDate = (dateString: string) => {
+    const [day, month, year] =
+      dateString.split("/");
+
+    return new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day)
+    );
+  };
+
+  const filteredProducts = products
+    .filter((product) => {
       if (activeTab === "ativos") {
         return product.status === "ativo";
       }
 
-      if (
-        activeTab === "consumidos"
-      ) {
-        return (
-          product.status ===
-          "consumido"
-        );
+      if (activeTab === "consumidos") {
+        return product.status === "consumido";
       }
 
-      return (
-        product.status ===
-        "descartado"
+      return product.status === "descartado";
+    })
+    .sort((a, b) => {
+      const dateA = convertDate(
+        a.expirationDate
       );
-    }
-  );
+
+      const dateB = convertDate(
+        b.expirationDate
+      );
+
+      return (
+        dateA.getTime() -
+        dateB.getTime()
+      );
+    });
 
   return (
     <SafeAreaView
@@ -147,29 +211,61 @@ export default function HomeScreen() {
         <View style={styles.actions}>
           <TouchableOpacity
             style={styles.iconButton}
+            onPress={() =>
+              router.push("/notifications")
+            }
           >
             <MaterialCommunityIcons
               name="bell-outline"
               size={24}
               color="#22C55E"
             />
+
+            {notificationCount > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>
+                  {notificationCount > 9
+                    ? "9+"
+                    : notificationCount}
+                </Text>
+              </View>
+            )}
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.iconButton}
-          >
-            <MaterialCommunityIcons
-              name="account-circle"
-              size={26}
-              color="#22C55E"
-            />
-          </TouchableOpacity>
+         <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() =>
+            router.push("/profile")
+          }
+        >
+          <MaterialCommunityIcons
+            name="account-circle"
+            size={26}
+            color="#22C55E"
+          />
+        </TouchableOpacity>
         </View>
       </View>
 
       <Text style={styles.title}>
         Meus Produtos
       </Text>
+
+      <View style={styles.searchContainer}>
+        <Feather
+          name="search"
+          size={20}
+          color="#6B7280"
+        />
+
+        <TextInput
+          placeholder="Buscar alimento..."
+          placeholderTextColor="#9CA3AF"
+          value={search}
+          onChangeText={setSearch}
+          style={styles.searchInput}
+        />
+      </View>
 
       <View style={styles.tabsContainer}>
         <TouchableOpacity
@@ -248,18 +344,12 @@ export default function HomeScreen() {
       </View>
 
       <ScrollView
-        style={
-          styles.productsContainer
-        }
-        contentContainerStyle={
-          styles.productsContent
-        }
-        showsVerticalScrollIndicator={
-          false
-        }
+        style={styles.productsContainer}
+        contentContainerStyle={styles.productsContent}
+        showsVerticalScrollIndicator={false}
       >
-        {filteredProducts.map(
-          (product) => (
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
               name={product.name}
@@ -267,6 +357,9 @@ export default function HomeScreen() {
               quantity={product.quantity}
               expirationDate={product.expirationDate}
               status={product.status}
+              onPress={() =>
+                setSelectedProduct(product)
+              }
               onConsume={() =>
                 handleConsumeProduct(product.id)
               }
@@ -277,7 +370,47 @@ export default function HomeScreen() {
                 handleReactivateProduct(product.id)
               }
             />
-          )
+          ))
+        ) : (
+          <View style={styles.emptyContainer}>
+
+          <View style={styles.emptyIconWrapper}>
+            <MaterialCommunityIcons
+              name={
+                activeTab === "ativos"
+                  ? "fridge-outline"
+                  : activeTab === "consumidos"
+                  ? "silverware-fork-knife"
+                  : "trash-can-outline"
+              }
+              size={42}
+              color={
+                activeTab === "ativos"
+                  ? "#22C55E"
+                  : activeTab === "consumidos"
+                  ? "#14B8A6"
+                  : "#EF4444"
+              }
+            />
+          </View>
+
+          <Text style={styles.emptyTitle}>
+            {activeTab === "ativos"
+              ? "Nenhum produto ativo"
+              : activeTab === "consumidos"
+              ? "Nenhum produto consumido"
+              : "Nenhum produto descartado"}
+          </Text>
+
+          <Text style={styles.emptyDescription}>
+            {activeTab === "ativos"
+              ? "Clique em + para adicionar seu primeiro alimento."
+              : activeTab === "consumidos"
+              ? "Os alimentos consumidos aparecerão aqui."
+              : "Os alimentos descartados aparecerão aqui."}
+          </Text>
+
+        </View>
         )}
       </ScrollView>
 
@@ -300,6 +433,16 @@ export default function HomeScreen() {
           setModalVisible(false)
         }
         onSave={handleAddProduct}
+      />
+
+      <EditProductModal
+        visible={selectedProduct !== null}
+        product={selectedProduct}
+        onClose={() =>
+          setSelectedProduct(null)
+        }
+        onSave={handleUpdateProduct}
+        onDelete={handleDeleteProduct}
       />
     </SafeAreaView>
   );
@@ -401,4 +544,96 @@ const styles = StyleSheet.create({
 
     elevation: 8,
   },
+
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+
+    marginHorizontal: 24,
+    marginTop: 18,
+
+    borderRadius: 16,
+    paddingHorizontal: 16,
+
+    height: 54,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+
+    elevation: 2,
+  },
+
+  searchInput: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 15,
+    color: "#111827",
+  },
+
+  emptyIconWrapper: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+
+    backgroundColor: "#F3F4F6",
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    marginBottom: 12,
+},
+
+emptyContainer: {
+  alignItems: "center",
+  justifyContent: "center",
+
+  paddingTop: 80,
+  paddingHorizontal: 32,
+},
+
+emptyTitle: {
+  fontSize: 20,
+  fontWeight: "700",
+  color: "#111827",
+},
+
+emptyDescription: {
+  marginTop: 8,
+
+  fontSize: 15,
+  color: "#6B7280",
+
+  textAlign: "center",
+  lineHeight: 22,
+},
+
+  badge: {
+  position: "absolute",
+  top: -4,
+  right: -6,
+
+  minWidth: 18,
+  height: 18,
+
+  borderRadius: 9,
+
+  backgroundColor: "#EF4444",
+
+  justifyContent: "center",
+  alignItems: "center",
+
+  paddingHorizontal: 4,
+},
+
+badgeText: {
+  color: "#FFFFFF",
+  fontSize: 10,
+  fontWeight: "700",
+},
 });

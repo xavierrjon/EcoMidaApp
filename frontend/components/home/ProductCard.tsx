@@ -14,6 +14,8 @@ interface ProductCardProps {
   expirationDate: string;
   status: "ativo" | "consumido" | "descartado";
 
+  onPress?: () => void;
+
   onConsume?: () => void;
   onDiscard?: () => void;
   onReactivate?: () => void;
@@ -89,10 +91,12 @@ export default function ProductCard({
   quantity,
   expirationDate,
   status,
+  onPress,
   onConsume,
   onDiscard,
   onReactivate,
 }: ProductCardProps) {
+
   const expirationStatus =
     getExpirationStatus(
       expirationDate
@@ -113,7 +117,12 @@ export default function ProductCard({
       : "#DCFCE7";
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={0.9}
+      onPress={onPress}
+    >
+
       <View style={styles.header}>
         <View
           style={[
@@ -218,27 +227,19 @@ export default function ProductCard({
       {status === "ativo" && (
         <View style={styles.actions}>
           <TouchableOpacity
-            style={
-              styles.consumeButton
-            }
+            style={styles.consumeButton}
             onPress={onConsume}
           >
-            <Text
-              style={styles.consumeText}
-            >
+            <Text style={styles.consumeText}>
               Consumir
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={
-              styles.discardButton
-            }
+            style={styles.discardButton}
             onPress={onDiscard}
           >
-            <Text
-              style={styles.discardText}
-            >
+            <Text style={styles.discardText}>
               Descartar
             </Text>
           </TouchableOpacity>
@@ -252,16 +253,15 @@ export default function ProductCard({
             onPress={onReactivate}
           >
             <Text
-              style={
-                styles.reactivateText
-              }
+              style={styles.reactivateText}
             >
               Reativar
             </Text>
           </TouchableOpacity>
         </View>
       )}
-    </View>
+
+    </TouchableOpacity>
   );
 }
 
