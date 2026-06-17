@@ -45,6 +45,12 @@ export default function HomeScreen() {
   const [products, setProducts] =
     useState<Product[]>([]);
 
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    photo: null as string | null,
+  });
+
   const [modalVisible, setModalVisible] =
     useState(false);
 
@@ -171,31 +177,35 @@ export default function HomeScreen() {
   };
 
   const filteredProducts = products
-    .filter((product) => {
-      if (activeTab === "ativos") {
-        return product.status === "ativo";
-      }
+  .filter((product) => {
+    const matchesTab =
+      activeTab === "ativos"
+        ? product.status === "ativo"
+        : activeTab === "consumidos"
+        ? product.status === "consumido"
+        : product.status === "descartado";
 
-      if (activeTab === "consumidos") {
-        return product.status === "consumido";
-      }
+    const matchesSearch =
+      product.name
+        .toLowerCase()
+        .includes(search.toLowerCase());
 
-      return product.status === "descartado";
-    })
-    .sort((a, b) => {
-      const dateA = convertDate(
-        a.expirationDate
-      );
+    return matchesTab && matchesSearch;
+  })
+  .sort((a, b) => {
+    const dateA = convertDate(
+      a.expirationDate
+    );
 
-      const dateB = convertDate(
-        b.expirationDate
-      );
+    const dateB = convertDate(
+      b.expirationDate
+    );
 
-      return (
-        dateA.getTime() -
-        dateB.getTime()
-      );
-    });
+    return (
+      dateA.getTime() -
+      dateB.getTime()
+    );
+  });
 
   return (
     <SafeAreaView
@@ -217,7 +227,7 @@ export default function HomeScreen() {
           >
             <MaterialCommunityIcons
               name="bell-outline"
-              size={24}
+              size={26}
               color="#22C55E"
             />
 
@@ -238,13 +248,26 @@ export default function HomeScreen() {
             router.push("/profile")
           }
         >
-          <MaterialCommunityIcons
-            name="account-circle"
-            size={26}
-            color="#22C55E"
+          {user.photo ? (
+          <Image
+            source={{ uri: user.photo }}
+            style={styles.headerAvatar}
           />
-        </TouchableOpacity>
-        </View>
+        ) : (
+          <View
+            style={
+              styles.headerAvatarPlaceholder
+            }
+          >
+            <MaterialCommunityIcons
+              name="account"
+              size={16}
+              color="#FFFFFF"
+            />
+          </View>
+        )}
+      </TouchableOpacity>
+      </View>
       </View>
 
       <Text style={styles.title}>
@@ -635,5 +658,21 @@ badgeText: {
   color: "#FFFFFF",
   fontSize: 10,
   fontWeight: "700",
+},
+
+headerAvatar: {
+  width: 38,
+  height: 38,
+  borderRadius: 19,
+},
+
+headerAvatarPlaceholder: {
+  width: 28,
+  height: 28,
+  borderRadius: 19,
+  backgroundColor: "#22C55E",
+
+  justifyContent: "center",
+  alignItems: "center",
 },
 });

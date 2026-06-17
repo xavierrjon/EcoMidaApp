@@ -7,13 +7,101 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Alert } from "react-native";
+
 import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
 import { router } from "expo-router";
 
+import { useState } from "react";
+
+import EditProfileModal from "@/components/profile/EditProfileModal";
+import ChangePasswordModal from "@/components/profile/ChangePasswordModal";
+import NotificationSettingsModal from "@/components/profile/NotificationSettingsModal";
+import { Image } from "react-native";
+
 export default function ProfileScreen() {
+  const [isEditProfileModalVisible, setIsEditProfileModalVisible] = useState(false);
+  const [isChangePasswordModalVisible, setIsChangePasswordModalVisible] = useState(false);
+  const [isNotificationSettingsModalVisible, setIsNotificationSettingsModalVisible] = useState(false);
+  
+  const [
+    notificationSettings,
+    setNotificationSettings,
+  ] = useState({
+    alertsEnabled: true,
+    daysBefore: 3,
+    silentMode: false,
+  });
+
+  const handleSaveNotificationSettings = (
+    data: {
+      alertsEnabled: boolean;
+      daysBefore: number;
+      silentMode: boolean;
+    }
+  ) => {
+    setNotificationSettings(data);
+  };
+
+  const [user, setUser] = useState({
+     name: "Usuário",
+     email: "usuario@email.com",
+     photo: null as string | null,
+  });
+
+  const handleUpdateProfile = (data: {
+    name: string;
+    email: string;
+  }) => {
+    setUser((prev) => ({
+      ...prev,
+      ...data,
+    }));
+  };
+
+  const handleChangePassword = (
+    currentPassword: string,
+    newPassword: string
+  ) => {
+    console.log(
+      "Senha atual:",
+      currentPassword
+    );
+
+    console.log(
+      "Nova senha:",
+      newPassword
+    );
+
+    alert(
+      "Senha alterada com sucesso!"
+    );
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Sair da Conta",
+      "Tem certeza que deseja sair?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Sair",
+          style: "destructive",
+          onPress: () => {
+            router.replace("/login");
+          },
+        },
+      ]
+    );
+  };
+
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -31,26 +119,36 @@ export default function ProfileScreen() {
 
       <View style={styles.profileSection}>
         <View style={styles.avatar}>
-          <MaterialCommunityIcons
-            name="account"
-            size={90}
-            color="#FFFFFF"
-          />
+          {user.photo ? (
+        <Image
+          source={{ uri: user.photo }}
+          style={styles.avatarImage}
+        />
+      ) : (
+        <MaterialCommunityIcons
+          name="account"
+          size={90}
+          color="#FFFFFF"
+        />
+      )}
         </View>
 
         <Text style={styles.name}>
-          Usuário
+          {user.name}
         </Text>
 
         <Text style={styles.email}>
-          usuario@email.com
+          {user.email}
         </Text>
       </View>
 
       <View style={styles.menu}>
 
         <TouchableOpacity
-          style={styles.menuItem}
+            style={styles.menuItem}
+            onPress={() =>
+            setIsEditProfileModalVisible(true)
+          }
         >
           <MaterialCommunityIcons
             name="account-edit-outline"
@@ -71,6 +169,9 @@ export default function ProfileScreen() {
 
         <TouchableOpacity
           style={styles.menuItem}
+          onPress={() =>
+          setIsNotificationSettingsModalVisible(true)
+       }
         >
           <MaterialCommunityIcons
             name="bell-cog-outline"
@@ -90,8 +191,12 @@ export default function ProfileScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.menuItem}
+            style={styles.menuItem}
+            onPress={() =>
+            setIsChangePasswordModalVisible(true)
+            }
         >
+        
           <MaterialCommunityIcons
             name="lock-outline"
             size={24}
@@ -111,6 +216,7 @@ export default function ProfileScreen() {
 
         <TouchableOpacity
           style={styles.logoutItem}
+          onPress={handleLogout}
         >
           <MaterialCommunityIcons
             name="logout"
@@ -125,6 +231,41 @@ export default function ProfileScreen() {
 
       </View>
 
+      <EditProfileModal
+        visible={isEditProfileModalVisible}
+        onClose={() =>
+          setIsEditProfileModalVisible(false)
+        }
+        user={user}
+        onSave={handleUpdateProfile}
+      />
+
+      <NotificationSettingsModal
+        visible={
+          isNotificationSettingsModalVisible
+        }
+        onClose={() =>
+          setIsNotificationSettingsModalVisible(
+            false
+          )
+        }
+        settings={notificationSettings}
+        onSave={
+          handleSaveNotificationSettings
+        }
+      />
+
+      <ChangePasswordModal
+        visible={
+          isChangePasswordModalVisible
+        }
+        onClose={() =>
+          setIsChangePasswordModalVisible(
+            false
+          )
+        }
+        onSave={handleChangePassword}
+      />
     </SafeAreaView>
   );
 }
@@ -154,6 +295,12 @@ const styles = StyleSheet.create({
 
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 70,
   },
 
   name: {
