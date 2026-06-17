@@ -1,25 +1,20 @@
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { router } from "expo-router";
-
 import { Feather } from "@expo/vector-icons";
+import { useState } from "react";
 
 import CustomInput from "@/components/ui/CustomInput";
 import PrimaryButton from "@/components/ui/PrimaryButton";
-
-import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RegisterScreen() {
   const [name, setName] = useState("");
@@ -27,8 +22,11 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleRegister = () => {
+  const { signUp } = useAuth();
+
+  const handleRegister = async () => {
     setError("");
 
     if (!name.trim()) {
@@ -36,12 +34,7 @@ export default function RegisterScreen() {
       return;
     }
 
-    if (!email.trim()) {
-      setError("Informe seu email.");
-      return;
-    }
-
-    if (!email.includes("@")) {
+    if (!email.trim() || !email.includes("@")) {
       setError("Informe um email válido.");
       return;
     }
@@ -61,138 +54,135 @@ export default function RegisterScreen() {
       return;
     }
 
-    router.replace("/(tabs)/home");
+    setIsLoading(true);
+
+    try {
+      await signUp(name, email, password);
+      router.replace("/(tabs)");
+    } catch (err: any) {
+      setError(err.message || "Ocorreu um erro ao cadastrar.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.back()}
+            >
+              <Feather
+                name="arrow-left"
+                size={28}
+                color="#FFFFFF"
+              />
+            </TouchableOpacity>
+          </View>
 
-          <ScrollView
-            contentContainerStyle={styles.scroll}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
-
-            <View style={styles.header}>
-
-              <TouchableOpacity
-                onPress={() => router.back()}
-                style={styles.backButton}
-              >
-                <Feather
-                  name="arrow-left"
-                  size={28}
-                  color="#FFFFFF"
-                />
-              </TouchableOpacity>
-
-            </View>
-
-            <View style={styles.card}>
-
+          <View style={styles.card}>
+            <View style={styles.content}>
               <Text style={styles.title}>
                 Cadastre-se
               </Text>
 
-              <View style={styles.form}>
+              <CustomInput
+                placeholder="Nome completo"
+                icon="user"
+                value={name}
+                onChangeText={setName}
+              />
 
-                <CustomInput
-                  placeholder="Nome completo"
-                  icon="user"
-                  value={name}
-                  onChangeText={setName}
-                />
+              <CustomInput
+                placeholder="Email"
+                icon="mail"
+                value={email}
+                onChangeText={setEmail}
+              />
 
-                <CustomInput
-                  placeholder="Email"
-                  icon="mail"
-                  value={email}
-                  onChangeText={setEmail}
-                />
+              <CustomInput
+                placeholder="Senha"
+                icon="lock"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
 
-                <CustomInput
-                  placeholder="Senha"
-                  icon="lock"
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                />
+              <CustomInput
+                placeholder="Confirmar senha"
+                icon="lock"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
 
-                <CustomInput
-                  placeholder="Confirmar senha"
-                  icon="lock"
-                  secureTextEntry
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                />
+              {error ? (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>
+                    ⚠ {error}
+                  </Text>
+                </View>
+              ) : null}
 
-                {error ? (
-                  <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>
-                      ⚠ {error}
-                    </Text>
-                  </View>
-                ) : null}
+              <PrimaryButton
+                title="Cadastrar"
+                onPress={handleRegister}
+                disabled={isLoading}
+                loading={isLoading}
+              />
 
-                <PrimaryButton
-                  title="Cadastrar"
-                  onPress={handleRegister}
-                />
-
+              <View style={styles.linksContainer}>
                 <TouchableOpacity
-                  onPress={() =>
-                    router.push("/login")
-                  }
+                  onPress={() => router.push("/login")}
                 >
                   <Text style={styles.login}>
                     Já possui conta?
                     <Text style={styles.loginHighlight}>
-                      {" "}Entrar
+                      {" "}
+                      Entrar
                     </Text>
                   </Text>
                 </TouchableOpacity>
-
               </View>
-
             </View>
-
-          </ScrollView>
-        </KeyboardAvoidingView>
-        
-      </TouchableWithoutFeedback>
-
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: "#22C55E",
   },
 
-  scroll: {
+  scrollContent: {
     flexGrow: 1,
   },
 
   header: {
-    paddingHorizontal: 24,
-    paddingTop: 18,
-    paddingBottom: 30,
+    paddingHorizontal: 28,
+    paddingTop: 40,
+    paddingBottom: 70,
   },
 
   backButton: {
     width: 42,
     height: 42,
     justifyContent: "center",
+    alignItems: "flex-start",
   },
 
   card: {
@@ -201,9 +191,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 36,
     borderTopRightRadius: 36,
     paddingHorizontal: 28,
-    paddingTop: 42,
-    paddingBottom: 36,
-    minHeight: "75%",
+    paddingTop: 56,
+    minHeight: 650,
+  },
+
+  content: {
+    flex: 1,
+    justifyContent: "flex-start",
   },
 
   title: {
@@ -211,11 +205,23 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#111827",
     textAlign: "center",
-    marginBottom: 36,
+    marginBottom: 32,
   },
 
-  form: {
-    width: "100%",
+  linksContainer: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+
+  login: {
+    color: "#6B7280",
+    fontSize: 15,
+    textAlign: "center",
+  },
+
+  loginHighlight: {
+    color: "#22C55E",
+    fontWeight: "700",
   },
 
   errorContainer: {
@@ -233,17 +239,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
   },
-
-  login: {
-    textAlign: "center",
-    marginTop: 20,
-    color: "#6B7280",
-    fontSize: 15,
-  },
-
-  loginHighlight: {
-    color: "#22C55E",
-    fontWeight: "700",
-  },
-
 });
