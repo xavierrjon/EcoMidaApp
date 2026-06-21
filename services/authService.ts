@@ -138,7 +138,7 @@ class AuthService {
       case "auth/wrong-password":
         return "Senha incorreta.";
       default:
-        return "Ocorreu um erro. Tente novamente.";
+        return "Ocorreu um erro. Verifique suas credenciais.";
     }
   }
 
