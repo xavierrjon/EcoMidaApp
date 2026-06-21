@@ -58,7 +58,7 @@ export default function RegisterScreen() {
 
     try {
       await signUp(name, email, password);
-      router.replace("/(tabs)");
+      router.replace("/(tabs)/home");
     } catch (err: any) {
       setError(err.message || "Ocorreu um erro ao cadastrar.");
     } finally {

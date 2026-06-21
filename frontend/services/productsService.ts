@@ -1,4 +1,3 @@
-// services/productsService.ts
 import { db, auth } from "@/firebase/config";
 import {
   collection,

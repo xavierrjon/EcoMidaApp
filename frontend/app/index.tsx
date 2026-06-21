@@ -28,7 +28,6 @@ export default function SplashScreen() {
         duration: 600,
         useNativeDriver: true,
       }).start(() => {
-        // Após a animação, redireciona com base no estado de autenticação
         if (!isLoading) {
           if (user) {
             router.replace('/(tabs)/home');

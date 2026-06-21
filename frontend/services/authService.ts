@@ -62,20 +62,22 @@ class AuthService {
     email: string,
   ) {
     try {
-      await Promise.all([
-        setDoc(doc(db, "users", uid), {
-          name,
-          email,
-          createdAt: serverTimestamp(),
-        }),
-        setDoc(doc(db, "userSettings", uid), {
-          userId: uid,
-          notificationEnabled: true,
-          daysBeforeExpiration: 3,
-        }),
-      ]);
+      await setDoc(doc(db, "users", uid), {
+        name,
+        email,
+        createdAt: serverTimestamp(),
+      });
     } catch (error) {
-      console.error("Erro ao criar documentos em background:", error);
+      console.error("Erro ao criar documento users:", error);
+    }
+    try {
+      await setDoc(doc(db, "userSettings", uid), {
+        userId: uid,
+        notificationEnabled: true,
+        daysBeforeExpiration: 3,
+      });
+    } catch (error) {
+      console.error("Erro ao criar documento userSettings:", error);
     }
   }
 
@@ -154,7 +156,6 @@ class AuthService {
       await updateEmail(firebaseUser, data.email);
     }
 
-    // Atualizar Firestore
     const userRef = doc(db, "users", firebaseUser.uid);
     await updateDoc(userRef, {
       name: data.name || firebaseUser.displayName,
@@ -164,9 +165,6 @@ class AuthService {
     return this.mapFirebaseUser(firebaseUser);
   }
 
-  /**
-   * Alterar senha (exige senha atual para reautenticação)
-   */
   async changePassword(
     currentPassword: string,
     newPassword: string,
