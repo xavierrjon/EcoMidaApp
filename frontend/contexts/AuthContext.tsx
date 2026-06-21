@@ -1,3 +1,4 @@
+// contexts/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
@@ -11,6 +12,11 @@ interface AuthContextData {
   signUp: (name: string, email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
+  updateUser: (data: { name: string; email: string }) => Promise<void>;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string,
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -26,7 +32,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           uid: firebaseUser.uid,
           name: firebaseUser.displayName || "",
           email: firebaseUser.email!,
-          createdAt: new Date(),
+          photo: firebaseUser.photoURL,
+          createdAt: firebaseUser.metadata.creationTime
+            ? new Date(firebaseUser.metadata.creationTime)
+            : new Date(),
         });
       } else {
         setUser(null);
@@ -55,9 +64,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await authService.forgotPassword(email);
   };
 
+  const updateUser = async (data: { name: string; email: string }) => {
+    const updatedUser = await authService.updateProfile(data);
+    setUser(updatedUser);
+  };
+
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string,
+  ) => {
+    await authService.changePassword(currentPassword, newPassword);
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, signIn, signUp, signOut, forgotPassword }}
+      value={{
+        user,
+        isLoading,
+        signIn,
+        signUp,
+        signOut,
+        forgotPassword,
+        updateUser,
+        changePassword,
+      }}
     >
       {children}
     </AuthContext.Provider>

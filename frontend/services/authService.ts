@@ -5,8 +5,18 @@ import {
   sendPasswordResetEmail,
   updateProfile,
   User as FirebaseUser,
+  EmailAuthProvider,
+  updatePassword,
+  reauthenticateWithCredential,
+  updateEmail,
 } from "firebase/auth";
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import { User } from "@/types/user";
 
@@ -128,6 +138,50 @@ class AuthService {
       default:
         return "Ocorreu um erro. Tente novamente.";
     }
+  }
+
+  async updateProfile(data: { name?: string; email?: string }): Promise<User> {
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) {
+      throw new Error("Usuário não autenticado");
+    }
+
+    if (data.name && data.name !== firebaseUser.displayName) {
+      await updateProfile(firebaseUser, { displayName: data.name });
+    }
+
+    if (data.email && data.email !== firebaseUser.email) {
+      await updateEmail(firebaseUser, data.email);
+    }
+
+    // Atualizar Firestore
+    const userRef = doc(db, "users", firebaseUser.uid);
+    await updateDoc(userRef, {
+      name: data.name || firebaseUser.displayName,
+      email: data.email || firebaseUser.email,
+    });
+
+    return this.mapFirebaseUser(firebaseUser);
+  }
+
+  /**
+   * Alterar senha (exige senha atual para reautenticação)
+   */
+  async changePassword(
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser || !firebaseUser.email) {
+      throw new Error("Usuário não autenticado");
+    }
+
+    const credential = EmailAuthProvider.credential(
+      firebaseUser.email,
+      currentPassword,
+    );
+    await reauthenticateWithCredential(firebaseUser, credential);
+    await updatePassword(firebaseUser, newPassword);
   }
 }
 

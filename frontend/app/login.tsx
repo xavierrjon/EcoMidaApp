@@ -39,7 +39,7 @@ export default function LoginScreen() {
 
     try {
       await signIn(email, password);
-      router.replace("/(tabs)");
+      router.replace("/(tabs)/home");
     } catch (err: any) {
       setError(err.message || "Ocorreu um erro ao entrar.");
     } finally {

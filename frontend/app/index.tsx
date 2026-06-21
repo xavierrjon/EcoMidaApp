@@ -31,7 +31,7 @@ export default function SplashScreen() {
         // Após a animação, redireciona com base no estado de autenticação
         if (!isLoading) {
           if (user) {
-            router.replace('/(tabs)');
+            router.replace('/(tabs)/home');
           } else {
             router.replace('/login');
           }
