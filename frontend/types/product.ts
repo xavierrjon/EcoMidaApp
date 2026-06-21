@@ -1,7 +1,4 @@
-export type ProductStatus =
-  | "ativo"
-  | "consumido"
-  | "descartado";
+export type ProductStatus = "ativo" | "consumido" | "descartado";
 
 export interface Product {
   id: string;
