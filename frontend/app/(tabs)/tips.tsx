@@ -8,32 +8,27 @@ import {
   Image,
 } from "react-native";
 import { useState, useEffect, useCallback } from "react";
-
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { router } from "expo-router";
-
 import { useFocusEffect } from "@react-navigation/native";
 
 import TipCard from "@/components/tips/TipCard";
-
 import { tipsService } from "@/services/tipsService";
-
 import { favoritesService } from "@/services/favoritesService";
-
 import { Tip } from "@/types/tips";
-
 import { productsService } from "@/services/productsService";
-
 import { notificationsService } from "@/services/notificationsService";
+import { useAuth } from "@/contexts/AuthContext"; // 👈 importa o contexto
 
 export default function TipsScreen() {
+  const { user } = useAuth(); // 👈 pega o usuário logado
+
   const [search, setSearch] = useState("");
   const [tips, setTips] = useState<Tip[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
     loadTips();
@@ -43,7 +38,7 @@ export default function TipsScreen() {
     useCallback(() => {
       loadFavorites();
       loadNotifications();
-    }, [])
+    }, []),
   );
 
   const loadTips = async () => {
@@ -51,39 +46,25 @@ export default function TipsScreen() {
     setTips(data);
   };
 
-  const [notificationCount,
-  setNotificationCount] =
-  useState(0);
-
   const loadFavorites = async () => {
     const data = await favoritesService.getFavorites();
     setFavorites(data);
   };
 
-  const loadNotifications =
-  async () => {
-    const products =
-      await productsService.getAll();
-
-    const notifications =
-      notificationsService.generate(
-        products
-      );
-
-    setNotificationCount(
-      notifications.length
-    );
+  const loadNotifications = async () => {
+    const products = await productsService.getAll();
+    const notifications = notificationsService.generate(products);
+    setNotificationCount(notifications.length);
   };
 
   const filteredTips = tips.filter((tip) => {
-  const matchesSearch =
-    tip.title.toLowerCase().includes(search.toLowerCase()) ||
-    tip.description.toLowerCase().includes(search.toLowerCase()) ||
-    tip.category.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch =
+      tip.title.toLowerCase().includes(search.toLowerCase()) ||
+      tip.description.toLowerCase().includes(search.toLowerCase()) ||
+      tip.category.toLowerCase().includes(search.toLowerCase());
 
-  const matchesFavorite = !showFavorites || favorites.includes(tip.id);
-
-  return matchesSearch && matchesFavorite;
+    const matchesFavorite = !showFavorites || favorites.includes(tip.id);
+    return matchesSearch && matchesFavorite;
   });
 
   return (
@@ -98,22 +79,17 @@ export default function TipsScreen() {
         <View style={styles.actions}>
           <TouchableOpacity
             style={styles.iconButton}
-            onPress={() =>
-              router.push("/notifications")
-            }
+            onPress={() => router.push("/notifications")}
           >
             <MaterialCommunityIcons
               name="bell-outline"
               size={26}
               color="#22C55E"
             />
-
             {notificationCount > 0 && (
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>
-                  {notificationCount > 9
-                    ? "9+"
-                    : notificationCount}
+                  {notificationCount > 9 ? "9+" : notificationCount}
                 </Text>
               </View>
             )}
@@ -123,13 +99,17 @@ export default function TipsScreen() {
             style={styles.iconButton}
             onPress={() => router.push("/profile")}
           >
-            <View style={styles.headerAvatarPlaceholder}>
-              <MaterialCommunityIcons
-                name="account"
-                size={16}
-                color="#FFFFFF"
-              />
-            </View>
+            {user?.photo ? (
+              <Image source={{ uri: user.photo }} style={styles.headerAvatar} />
+            ) : (
+              <View style={styles.headerAvatarPlaceholder}>
+                <MaterialCommunityIcons
+                  name="account"
+                  size={16}
+                  color="#FFFFFF"
+                />
+              </View>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -138,11 +118,7 @@ export default function TipsScreen() {
 
       <View style={styles.searchRow}>
         <View style={styles.searchContainer}>
-          <Feather
-            name="search"
-            size={20}
-            color="#6B7280"
-          />
+          <Feather name="search" size={20} color="#6B7280" />
           <TextInput
             placeholder="Buscar dicas..."
             placeholderTextColor="#9CA3AF"
@@ -182,9 +158,7 @@ export default function TipsScreen() {
             onPress={() =>
               router.push({
                 pathname: "/tip-details",
-                params: {
-                  id: tip.id,
-                },
+                params: { id: tip.id },
               })
             }
           />
@@ -240,6 +214,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  headerAvatar: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+  },
   title: {
     fontSize: 26,
     fontWeight: "700",
@@ -263,10 +242,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     height: 54,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
     shadowRadius: 4,
     elevation: 2,
@@ -309,26 +285,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#6B7280",
   },
-
   badge: {
     position: "absolute",
-
     top: -4,
     right: -6,
-
     minWidth: 18,
     height: 18,
-
     borderRadius: 9,
-
     backgroundColor: "#EF4444",
-
     justifyContent: "center",
     alignItems: "center",
-
     paddingHorizontal: 4,
   },
-
   badgeText: {
     color: "#FFFFFF",
     fontSize: 10,
