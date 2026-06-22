@@ -1,18 +1,18 @@
-import { db, auth } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
+import { CreateProductDTO, Product, ProductStatus } from "@/types/product";
 import {
-  collection,
-  doc,
   addDoc,
-  getDocs,
-  getDoc,
-  updateDoc,
+  collection,
   deleteDoc,
-  query,
-  where,
+  doc,
+  getDoc,
+  getDocs,
   orderBy,
+  query,
   serverTimestamp,
+  updateDoc,
+  where,
 } from "firebase/firestore";
-import { Product, CreateProductDTO, ProductStatus } from "@/types/product";
 
 class ProductsService {
   private getUserId(): string {

@@ -1,22 +1,22 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  Image,
-  ScrollView,
-  Linking,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { useState } from "react";
-import EditProfileModal from "@/components/profile/EditProfileModal";
 import ChangePasswordModal from "@/components/profile/ChangePasswordModal";
+import EditProfileModal from "@/components/profile/EditProfileModal";
 import NotificationSettingsModal from "@/components/profile/NotificationSettingsModal";
 import { useAuth } from "@/contexts/AuthContext";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
+import { useState } from "react";
+import {
+  Alert,
+  Image,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
   const {

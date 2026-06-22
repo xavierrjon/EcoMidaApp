@@ -1,19 +1,19 @@
-import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Pressable,
-} from "react-native";
-import { useEffect, useState } from "react";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import CustomInput from "@/components/ui/CustomInput";
 import SelectInput from "@/components/ui/SelectInput";
-import CategoryModal from "./CategoryModal";
-import { Product } from "@/types/product";
 import { categories, units } from "@/data/productOptions";
+import { Product } from "@/types/product";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useEffect, useState } from "react";
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import CategoryModal from "./CategoryModal";
 
 interface EditProductModalProps {
   visible: boolean;
@@ -39,8 +39,7 @@ export default function EditProductModal({
   const [showUnitModal, setShowUnitModal] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
-  const [showDeleteConfirm, setShowDeleteConfirm] =
-  useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (!product) return;
@@ -57,32 +56,32 @@ export default function EditProductModal({
 
   const validateForm = () => {
     if (!name.trim()) {
-        alert("Informe o nome do alimento");
-        return false;
+      alert("Informe o nome do alimento");
+      return false;
     }
 
     if (!category) {
-        alert("Selecione uma categoria");
-        return false;
+      alert("Selecione uma categoria");
+      return false;
     }
 
     if (!expirationDate) {
-        alert("Selecione a data de validade");
-        return false;
+      alert("Selecione a data de validade");
+      return false;
     }
 
     if (!quantity) {
-        alert("Informe a quantidade");
-        return false;
+      alert("Informe a quantidade");
+      return false;
     }
 
     if (!unit) {
-        alert("Selecione uma unidade");
-        return false;
+      alert("Selecione uma unidade");
+      return false;
     }
 
     return true;
-    };
+  };
 
   const handleSave = () => {
     if (!product) return;
@@ -90,17 +89,17 @@ export default function EditProductModal({
     const isValid = validateForm();
 
     if (!isValid) {
-        return;
+      return;
     }
 
     onSave(product.id, {
-        name,
-        category,
-        quantity: Number(quantity),
-        unit,
-        expirationDate,
+      name,
+      category,
+      quantity: Number(quantity),
+      unit,
+      expirationDate,
     });
-    };
+  };
 
   const handleDelete = () => {
     if (!product) return;
@@ -108,19 +107,27 @@ export default function EditProductModal({
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent={true} onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={onClose}
+    >
       <View style={styles.overlay}>
         <View style={styles.container}>
           <Text style={styles.title}>Editar Produto</Text>
           <Text style={styles.subtitle}>Atualize as informações</Text>
 
-          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={styles.content}
+            showsVerticalScrollIndicator={false}
+          >
             <View style={styles.form}>
               <Text style={styles.label}>Nome do Alimento</Text>
-              <CustomInput 
-                placeholder="Nome" 
-                value={name} 
-                onChangeText={setName} 
+              <CustomInput
+                placeholder="Nome"
+                value={name}
+                onChangeText={setName}
               />
 
               <Text style={styles.label}>Categoria</Text>
@@ -131,8 +138,13 @@ export default function EditProductModal({
               />
 
               <Text style={styles.label}>Data de Validade</Text>
-              <Pressable style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
-                <Text style={styles.dateText}>{expirationDate || "Selecione uma data"}</Text>
+              <Pressable
+                style={styles.dateInput}
+                onPress={() => setShowDatePicker(true)}
+              >
+                <Text style={styles.dateText}>
+                  {expirationDate || "Selecione uma data"}
+                </Text>
               </Pressable>
 
               <Text style={styles.label}>Quantidade</Text>
@@ -183,70 +195,47 @@ export default function EditProductModal({
 
           <View style={styles.footer}>
             <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() =>
-                    setShowDeleteConfirm(true)
-                }
-                >
-                <Text style={styles.deleteText}>
-                    Excluir Produto
-                </Text>
+              style={styles.deleteButton}
+              onPress={() => setShowDeleteConfirm(true)}
+            >
+              <Text style={styles.deleteText}>Excluir Produto</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
               <Text style={styles.saveText}>Salvar Alterações</Text>
             </TouchableOpacity>
-
           </View>
 
-          <Modal
-            visible={showDeleteConfirm}
-            transparent
-            animationType="fade"
-            >
+          <Modal visible={showDeleteConfirm} transparent animationType="fade">
             <View style={styles.confirmOverlay}>
-
-                <View style={styles.confirmContainer}>
-
-                <Text style={styles.confirmTitle}>
-                    Excluir Produto
-                </Text>
+              <View style={styles.confirmContainer}>
+                <Text style={styles.confirmTitle}>Excluir Produto</Text>
 
                 <Text style={styles.confirmText}>
-                    Tem certeza que deseja excluir este produto?
+                  Tem certeza que deseja excluir este produto?
                 </Text>
 
                 <View style={styles.confirmActions}>
-
-                    <TouchableOpacity
+                  <TouchableOpacity
                     style={styles.confirmCancel}
-                    onPress={() =>
-                        setShowDeleteConfirm(false)
-                    }
-                    >
-                    <Text style={styles.confirmCancelText}>
-                        Cancelar
-                    </Text>
-                    </TouchableOpacity>
+                    onPress={() => setShowDeleteConfirm(false)}
+                  >
+                    <Text style={styles.confirmCancelText}>Cancelar</Text>
+                  </TouchableOpacity>
 
-                    <TouchableOpacity
+                  <TouchableOpacity
                     style={styles.confirmDelete}
                     onPress={() => {
-                        setShowDeleteConfirm(false);
-                        handleDelete();
+                      setShowDeleteConfirm(false);
+                      handleDelete();
                     }}
-                    >
-                    <Text style={styles.confirmDeleteText}>
-                        Excluir
-                    </Text>
-                    </TouchableOpacity>
-
+                  >
+                    <Text style={styles.confirmDeleteText}>Excluir</Text>
+                  </TouchableOpacity>
                 </View>
-
-                </View>
-
+              </View>
             </View>
-            </Modal>
+          </Modal>
         </View>
       </View>
     </Modal>

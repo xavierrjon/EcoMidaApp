@@ -1,24 +1,24 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-} from "react-native";
-import { router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import ProductCard from "@/components/home/ProductCard";
 import AddProductModal from "@/components/home/AddProductModal";
-import { Product, CreateProductDTO } from "@/types/product";
-import { productsService } from "@/services/productsService";
 import EditProductModal from "@/components/home/EditProductModal";
-import { notificationsService } from "@/services/notificationsService";
+import ProductCard from "@/components/home/ProductCard";
 import { useAuth } from "@/contexts/AuthContext";
+import { notificationsService } from "@/services/notificationsService";
+import { productsService } from "@/services/productsService";
+import { CreateProductDTO, Product } from "@/types/product";
 
 export default function HomeScreen() {
   const { user: authUser } = useAuth();
@@ -75,7 +75,9 @@ export default function HomeScreen() {
 
   const activeCount = products.filter((p) => p.status === "ativo").length;
   const consumedCount = products.filter((p) => p.status === "consumido").length;
-  const discardedCount = products.filter((p) => p.status === "descartado").length;
+  const discardedCount = products.filter(
+    (p) => p.status === "descartado",
+  ).length;
 
   const convertDate = (dateString: string) => {
     const [day, month, year] = dateString.split("/");
@@ -88,8 +90,8 @@ export default function HomeScreen() {
         activeTab === "ativos"
           ? product.status === "ativo"
           : activeTab === "consumidos"
-          ? product.status === "consumido"
-          : product.status === "descartado";
+            ? product.status === "consumido"
+            : product.status === "descartado";
       const matchesSearch = product.name
         .toLowerCase()
         .includes(search.toLowerCase());
@@ -140,7 +142,11 @@ export default function HomeScreen() {
               />
             ) : (
               <View style={styles.headerAvatarPlaceholder}>
-                <MaterialCommunityIcons name="account" size={16} color="#FFFFFF" />
+                <MaterialCommunityIcons
+                  name="account"
+                  size={16}
+                  color="#FFFFFF"
+                />
               </View>
             )}
           </TouchableOpacity>
@@ -232,16 +238,16 @@ export default function HomeScreen() {
                   activeTab === "ativos"
                     ? "fridge-outline"
                     : activeTab === "consumidos"
-                    ? "silverware-fork-knife"
-                    : "trash-can-outline"
+                      ? "silverware-fork-knife"
+                      : "trash-can-outline"
                 }
                 size={42}
                 color={
                   activeTab === "ativos"
                     ? "#22C55E"
                     : activeTab === "consumidos"
-                    ? "#14B8A6"
-                    : "#EF4444"
+                      ? "#14B8A6"
+                      : "#EF4444"
                 }
               />
             </View>
@@ -249,15 +255,15 @@ export default function HomeScreen() {
               {activeTab === "ativos"
                 ? "Nenhum produto ativo"
                 : activeTab === "consumidos"
-                ? "Nenhum produto consumido"
-                : "Nenhum produto descartado"}
+                  ? "Nenhum produto consumido"
+                  : "Nenhum produto descartado"}
             </Text>
             <Text style={styles.emptyDescription}>
               {activeTab === "ativos"
                 ? "Clique em + para adicionar seu primeiro alimento."
                 : activeTab === "consumidos"
-                ? "Os alimentos consumidos aparecerão aqui."
-                : "Os alimentos descartados aparecerão aqui."}
+                  ? "Os alimentos consumidos aparecerão aqui."
+                  : "Os alimentos descartados aparecerão aqui."}
             </Text>
           </View>
         )}

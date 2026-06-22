@@ -1,15 +1,15 @@
-import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
-} from "react-native";
-import { useState } from "react";
 import CustomInput from "@/components/ui/CustomInput";
+import { useState } from "react";
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface ChangePasswordModalProps {
   visible: boolean;
@@ -59,9 +59,9 @@ export default function ChangePasswordModal({
   };
 
   return (
-    <Modal 
-      visible={visible} 
-      transparent 
+    <Modal
+      visible={visible}
+      transparent
       animationType="slide"
       onRequestClose={() => {
         resetForm();
@@ -79,18 +79,12 @@ export default function ChangePasswordModal({
               keyboardShouldPersistTaps="handled"
               contentContainerStyle={styles.scrollContent}
             >
-              <Text style={styles.title}>
-                Alterar Senha
-              </Text>
+              <Text style={styles.title}>Alterar Senha</Text>
 
-              <Text style={styles.subtitle}>
-                Mantenha sua conta protegida
-              </Text>
+              <Text style={styles.subtitle}>Mantenha sua conta protegida</Text>
 
               <View style={styles.form}>
-                <Text style={styles.label}>
-                  Senha Atual
-                </Text>
+                <Text style={styles.label}>Senha Atual</Text>
 
                 <View style={styles.inputContainer}>
                   <CustomInput
@@ -101,9 +95,7 @@ export default function ChangePasswordModal({
                   />
                 </View>
 
-                <Text style={styles.label}>
-                  Nova Senha
-                </Text>
+                <Text style={styles.label}>Nova Senha</Text>
 
                 <View style={styles.inputContainer}>
                   <CustomInput
@@ -114,9 +106,7 @@ export default function ChangePasswordModal({
                   />
                 </View>
 
-                <Text style={styles.label}>
-                  Confirmar Nova Senha
-                </Text>
+                <Text style={styles.label}>Confirmar Nova Senha</Text>
 
                 <View style={styles.inputContainer}>
                   <CustomInput
@@ -130,21 +120,17 @@ export default function ChangePasswordModal({
             </ScrollView>
 
             <View style={styles.footer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => {
                   resetForm();
                   onClose();
                 }}
               >
-                <Text style={styles.cancel}>
-                  Cancelar
-                </Text>
+                <Text style={styles.cancel}>Cancelar</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveText}>
-                  Salvar
-                </Text>
+                <Text style={styles.saveText}>Salvar</Text>
               </TouchableOpacity>
             </View>
           </View>

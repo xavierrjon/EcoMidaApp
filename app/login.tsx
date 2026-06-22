@@ -1,3 +1,5 @@
+import { router } from "expo-router";
+import { useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -7,8 +9,6 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { useState } from "react";
 
 import CustomInput from "@/components/ui/CustomInput";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -49,25 +49,16 @@ export default function LoginScreen() {
 
   const handleForgotPassword = async () => {
     if (!email.trim()) {
-      Alert.alert(
-        "Preencha o e-mail",
-        "Digite seu e-mail no campo acima."
-      );
+      Alert.alert("Preencha o e-mail", "Digite seu e-mail no campo acima.");
       return;
     }
 
     try {
       await forgotPassword(email);
 
-      Alert.alert(
-        "Sucesso",
-        "Link de recuperação enviado para seu e-mail."
-      );
+      Alert.alert("Sucesso", "Link de recuperação enviado para seu e-mail.");
     } catch (err: any) {
-      Alert.alert(
-        "Erro",
-        err.message || "Não foi possível enviar."
-      );
+      Alert.alert("Erro", err.message || "Não foi possível enviar.");
     }
   };
 
@@ -80,9 +71,7 @@ export default function LoginScreen() {
       >
         <View style={styles.header}>
           <Text style={styles.hello}>Olá!</Text>
-          <Text style={styles.welcome}>
-            Bem-vindo ao EcoMida
-          </Text>
+          <Text style={styles.welcome}>Bem-vindo ao EcoMida</Text>
         </View>
 
         <View style={styles.card}>
@@ -106,9 +95,7 @@ export default function LoginScreen() {
 
             {error ? (
               <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>
-                  ⚠ {error}
-                </Text>
+                <Text style={styles.errorText}>⚠ {error}</Text>
               </View>
             ) : null}
 
@@ -121,20 +108,13 @@ export default function LoginScreen() {
 
             <View style={styles.linksContainer}>
               <TouchableOpacity onPress={handleForgotPassword}>
-                <Text style={styles.forgot}>
-                  Esqueceu sua senha?
-                </Text>
+                <Text style={styles.forgot}>Esqueceu sua senha?</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => router.push("/register")}
-              >
+              <TouchableOpacity onPress={() => router.push("/register")}>
                 <Text style={styles.register}>
                   Não possui conta?
-                  <Text style={styles.registerHighlight}>
-                    {" "}
-                    Cadastre-se
-                  </Text>
+                  <Text style={styles.registerHighlight}> Cadastre-se</Text>
                 </Text>
               </TouchableOpacity>
             </View>

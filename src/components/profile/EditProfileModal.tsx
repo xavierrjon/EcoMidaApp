@@ -1,19 +1,19 @@
-import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  Alert,
-  Linking,
-} from "react-native";
-import { useEffect, useState } from "react";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import CustomInput from "@/components/ui/CustomInput";
-import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "@/contexts/AuthContext";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { useEffect, useState } from "react";
+import {
+  Alert,
+  Image,
+  Linking,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface EditProfileModalProps {
   visible: boolean;

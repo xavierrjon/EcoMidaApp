@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from "@/contexts/AuthContext";
+import { router } from "expo-router";
+import { useEffect, useRef } from "react";
+import { Animated, StyleSheet, View } from "react-native";
 
 export default function SplashScreen() {
   const opacity = useRef(new Animated.Value(0)).current;
@@ -30,9 +30,9 @@ export default function SplashScreen() {
       }).start(() => {
         if (!isLoading) {
           if (user) {
-            router.replace('/(tabs)/home');
+            router.replace("/(tabs)/home");
           } else {
-            router.replace('/login');
+            router.replace("/login");
           }
         }
       });
@@ -44,12 +44,9 @@ export default function SplashScreen() {
   return (
     <View style={styles.container}>
       <Animated.Image
-        source={require('../assets/images/logo.png')}
+        source={require("../assets/images/logo.png")}
         resizeMode="contain"
-        style={[
-          styles.logo,
-          { opacity, transform: [{ scale }] },
-        ]}
+        style={[styles.logo, { opacity, transform: [{ scale }] }]}
       />
     </View>
   );
@@ -58,9 +55,9 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#22C55E',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#22C55E",
+    justifyContent: "center",
+    alignItems: "center",
   },
   logo: {
     width: 300,

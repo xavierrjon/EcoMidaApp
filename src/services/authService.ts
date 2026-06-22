@@ -1,24 +1,18 @@
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  sendPasswordResetEmail,
-  updateProfile,
-  User as FirebaseUser,
-  EmailAuthProvider,
-  updatePassword,
-  reauthenticateWithCredential,
-  updateEmail,
-} from "firebase/auth";
-import {
-  doc,
-  setDoc,
-  getDoc,
-  serverTimestamp,
-  updateDoc,
-} from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import { User } from "@/types/user";
+import {
+  createUserWithEmailAndPassword,
+  EmailAuthProvider,
+  User as FirebaseUser,
+  reauthenticateWithCredential,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  updateEmail,
+  updatePassword,
+  updateProfile,
+} from "firebase/auth";
+import { doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 
 class AuthService {
   private mapFirebaseUser(firebaseUser: FirebaseUser): User {

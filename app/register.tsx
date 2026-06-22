@@ -1,3 +1,6 @@
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -8,9 +11,6 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { Feather } from "@expo/vector-icons";
-import { useState } from "react";
 
 import CustomInput from "@/components/ui/CustomInput";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -82,19 +82,13 @@ export default function RegisterScreen() {
               style={styles.backButton}
               onPress={() => router.back()}
             >
-              <Feather
-                name="arrow-left"
-                size={28}
-                color="#FFFFFF"
-              />
+              <Feather name="arrow-left" size={28} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
 
           <View style={styles.card}>
             <View style={styles.content}>
-              <Text style={styles.title}>
-                Cadastre-se
-              </Text>
+              <Text style={styles.title}>Cadastre-se</Text>
 
               <CustomInput
                 placeholder="Nome completo"
@@ -128,9 +122,7 @@ export default function RegisterScreen() {
 
               {error ? (
                 <View style={styles.errorContainer}>
-                  <Text style={styles.errorText}>
-                    ⚠ {error}
-                  </Text>
+                  <Text style={styles.errorText}>⚠ {error}</Text>
                 </View>
               ) : null}
 
@@ -142,15 +134,10 @@ export default function RegisterScreen() {
               />
 
               <View style={styles.linksContainer}>
-                <TouchableOpacity
-                  onPress={() => router.push("/login")}
-                >
+                <TouchableOpacity onPress={() => router.push("/login")}>
                   <Text style={styles.login}>
                     Já possui conta?
-                    <Text style={styles.loginHighlight}>
-                      {" "}
-                      Entrar
-                    </Text>
+                    <Text style={styles.loginHighlight}> Entrar</Text>
                   </Text>
                 </TouchableOpacity>
               </View>

@@ -1,25 +1,25 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import { useState, useEffect, useCallback } from "react";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
+import { router } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import TipCard from "@/components/tips/TipCard";
-import { tipsService } from "@/services/tipsService";
-import { favoritesService } from "@/services/favoritesService";
-import { Tip } from "@/types/tips";
-import { productsService } from "@/services/productsService";
-import { notificationsService } from "@/services/notificationsService";
 import { useAuth } from "@/contexts/AuthContext"; // 👈 importa o contexto
+import { favoritesService } from "@/services/favoritesService";
+import { notificationsService } from "@/services/notificationsService";
+import { productsService } from "@/services/productsService";
+import { tipsService } from "@/services/tipsService";
+import { Tip } from "@/types/tips";
 
 export default function TipsScreen() {
   const { user } = useAuth(); // 👈 pega o usuário logado

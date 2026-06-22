@@ -1,17 +1,17 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "@/firebase/config";
+import { authService } from "@/services/authService";
+import { uploadImageToCloudinary } from "@/services/uploadService";
+import { User } from "@/types/user";
 import {
+  EmailAuthProvider,
   onAuthStateChanged,
-  updateProfile,
+  reauthenticateWithCredential,
   updateEmail,
   updatePassword,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
+  updateProfile,
 } from "firebase/auth";
-import { doc, updateDoc, getDoc, setDoc } from "firebase/firestore";
-import { authService } from "@/services/authService";
-import { User } from "@/types/user";
-import { uploadImageToCloudinary } from "@/services/uploadService";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface AuthContextData {
   user: User | null;

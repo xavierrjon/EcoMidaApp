@@ -1,5 +1,5 @@
-import { Product } from "@/types/product";
 import { Notification } from "@/types/notification";
+import { Product } from "@/types/product";
 
 export const notificationsService = {
   generate(products: Product[]): Notification[] {
@@ -12,22 +12,17 @@ export const notificationsService = {
         return;
       }
 
-      const [day, month, year] =
-        product.expirationDate.split("/");
+      const [day, month, year] = product.expirationDate.split("/");
 
       const expirationDate = new Date(
         Number(year),
         Number(month) - 1,
-        Number(day)
+        Number(day),
       );
 
-      const diffTime =
-        expirationDate.getTime() -
-        today.getTime();
+      const diffTime = expirationDate.getTime() - today.getTime();
 
-      const diffDays = Math.ceil(
-        diffTime / (1000 * 60 * 60 * 24)
-      );
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
       if (diffDays < 0) {
         notifications.push({
@@ -36,18 +31,14 @@ export const notificationsService = {
           message: `Vencido há ${Math.abs(diffDays)} dia(s)`,
           type: "expired",
         });
-      }
-
-      else if (diffDays === 0) {
+      } else if (diffDays === 0) {
         notifications.push({
           id: product.id,
           productName: product.name,
           message: "Vence hoje",
           type: "today",
         });
-      }
-
-      else if (diffDays <= 7) {
+      } else if (diffDays <= 7) {
         notifications.push({
           id: product.id,
           productName: product.name,

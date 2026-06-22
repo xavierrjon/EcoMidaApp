@@ -5,8 +5,7 @@ export const tipsData: Tip[] = [
     id: "1",
     title: "Como armazenar frutas corretamente",
     category: "Conservação",
-    description:
-      "Aprenda técnicas para manter frutas frescas por mais tempo.",
+    description: "Aprenda técnicas para manter frutas frescas por mais tempo.",
     readingTime: "2 min",
     createdAt: "20/04/2026",
     content:
@@ -17,8 +16,7 @@ export const tipsData: Tip[] = [
     id: "2",
     title: "Onde guardar ovos da maneira correta",
     category: "Geladeira",
-    description:
-      "Descubra o melhor local da geladeira para armazenar ovos.",
+    description: "Descubra o melhor local da geladeira para armazenar ovos.",
     readingTime: "2 min",
     createdAt: "21/04/2026",
     content:
@@ -29,8 +27,7 @@ export const tipsData: Tip[] = [
     id: "3",
     title: "Como congelar carnes sem perder qualidade",
     category: "Congelamento",
-    description:
-      "Saiba como preservar sabor e textura das carnes congeladas.",
+    description: "Saiba como preservar sabor e textura das carnes congeladas.",
     readingTime: "3 min",
     createdAt: "22/04/2026",
     content:
@@ -65,8 +62,7 @@ export const tipsData: Tip[] = [
     id: "6",
     title: "Organize sua geladeira para evitar desperdícios",
     category: "Geladeira",
-    description:
-      "Aprenda a posicionar corretamente cada alimento.",
+    description: "Aprenda a posicionar corretamente cada alimento.",
     readingTime: "4 min",
     createdAt: "25/04/2026",
     content:
@@ -89,8 +85,7 @@ export const tipsData: Tip[] = [
     id: "8",
     title: "Transforme pão amanhecido em novas receitas",
     category: "Aproveitamento",
-    description:
-      "Dê uma nova utilidade ao pão que sobrou.",
+    description: "Dê uma nova utilidade ao pão que sobrou.",
     readingTime: "2 min",
     createdAt: "27/04/2026",
     content:

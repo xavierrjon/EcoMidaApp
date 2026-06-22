@@ -1,17 +1,17 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useLocalSearchParams, router } from "expo-router";
-import { useEffect, useState } from "react";
 import { favoritesService } from "@/services/favoritesService";
 import { tipsService } from "@/services/tipsService";
 import { Tip } from "@/types/tips";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TipDetailsScreen() {
   const { id } = useLocalSearchParams();
@@ -69,11 +69,7 @@ export default function TipDetailsScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.hero}>
         <TouchableOpacity onPress={() => router.back()}>
-          <MaterialCommunityIcons
-            name="arrow-left"
-            size={28}
-            color="#FFFFFF"
-          />
+          <MaterialCommunityIcons name="arrow-left" size={28} color="#FFFFFF" />
         </TouchableOpacity>
 
         <View style={styles.heroContent}>
@@ -96,10 +92,7 @@ export default function TipDetailsScreen() {
         </View>
       </View>
 
-      <TouchableOpacity
-        style={styles.favoriteButton}
-        onPress={handleFavorite}
-      >
+      <TouchableOpacity style={styles.favoriteButton} onPress={handleFavorite}>
         <MaterialCommunityIcons
           name={isFavorite ? "heart" : "heart-outline"}
           size={22}
@@ -110,18 +103,11 @@ export default function TipDetailsScreen() {
         </Text>
       </TouchableOpacity>
 
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        >
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.articleCard}>
-            <Text style={styles.sectionTitle}>
-            📖  Conteúdo
-            </Text>
+          <Text style={styles.sectionTitle}>📖 Conteúdo</Text>
 
-            <Text style={styles.text}>
-            {tip.content}
-            </Text>
+          <Text style={styles.text}>{tip.content}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

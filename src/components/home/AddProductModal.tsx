@@ -1,11 +1,11 @@
 import {
   Modal,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   Pressable,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 import { useState } from "react";
@@ -17,22 +17,15 @@ import SelectInput from "@/components/ui/SelectInput";
 
 import CategoryModal from "./CategoryModal";
 
-import {
-  categories,
-  units,
-} from "@/data/productOptions";
+import { categories, units } from "@/data/productOptions";
 
-import {
-  CreateProductDTO,
-} from "@/types/product";
+import { CreateProductDTO } from "@/types/product";
 
 interface AddProductModalProps {
   visible: boolean;
   onClose: () => void;
 
-  onSave: (
-    product: CreateProductDTO
-  ) => void;
+  onSave: (product: CreateProductDTO) => void;
 }
 
 export default function AddProductModal({
@@ -42,40 +35,24 @@ export default function AddProductModal({
 }: AddProductModalProps) {
   const [name, setName] = useState("");
 
-  const [category, setCategory] =
-    useState("");
+  const [category, setCategory] = useState("");
 
-  const [quantity, setQuantity] =
-    useState("");
+  const [quantity, setQuantity] = useState("");
 
-  const [unit, setUnit] =
-    useState("");
+  const [unit, setUnit] = useState("");
 
-  const [expirationDate, setExpirationDate] =
-    useState("");
+  const [expirationDate, setExpirationDate] = useState("");
 
-  const [date, setDate] =
-    useState(new Date());
+  const [date, setDate] = useState(new Date());
 
-  const [showDatePicker, setShowDatePicker] =
-    useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const [
-    showCategoryModal,
-    setShowCategoryModal,
-  ] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
 
-  const [
-    showUnitModal,
-    setShowUnitModal,
-  ] = useState(false);
+  const [showUnitModal, setShowUnitModal] = useState(false);
 
-  const formatDate = (
-    selectedDate: Date
-  ) => {
-    return selectedDate.toLocaleDateString(
-      "pt-BR"
-    );
+  const formatDate = (selectedDate: Date) => {
+    return selectedDate.toLocaleDateString("pt-BR");
   };
 
   const validateForm = () => {
@@ -131,37 +108,22 @@ export default function AddProductModal({
 
     resetForm();
     onClose();
-
   };
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="slide"
-    >
+    <Modal visible={visible} transparent animationType="slide">
       <View style={styles.overlay}>
-
         <View style={styles.container}>
+          <Text style={styles.title}>Cadastrar Produto</Text>
 
-          <Text style={styles.title}>
-            Cadastrar Produto
-          </Text>
-
-          <Text style={styles.subtitle}>
-            Adicione um novo item à sua lista
-          </Text>
+          <Text style={styles.subtitle}>Adicione um novo item à sua lista</Text>
 
           <ScrollView
             style={styles.content}
             showsVerticalScrollIndicator={false}
           >
-
             <View style={styles.form}>
-
-              <Text style={styles.label}>
-                Nome do Alimento
-              </Text>
+              <Text style={styles.label}>Nome do Alimento</Text>
 
               <CustomInput
                 placeholder="Ex: Arroz, Leite..."
@@ -170,47 +132,33 @@ export default function AddProductModal({
                 onChangeText={setName}
               />
 
-              <Text style={styles.label}>
-                Categoria
-              </Text>
+              <Text style={styles.label}>Categoria</Text>
 
               <SelectInput
                 placeholder="Selecione uma categoria"
                 value={category}
-                onPress={() =>
-                  setShowCategoryModal(true)
-                }
+                onPress={() => setShowCategoryModal(true)}
               />
 
-              <Text style={styles.label}>
-                Data de Validade
-              </Text>
+              <Text style={styles.label}>Data de Validade</Text>
 
               <Pressable
                 style={[
                   styles.dateInput,
-                  expirationDate &&
-                    styles.dateInputSelected,
+                  expirationDate && styles.dateInputSelected,
                 ]}
-                onPress={() =>
-                  setShowDatePicker(true)
-                }
+                onPress={() => setShowDatePicker(true)}
               >
                 <Text
                   style={
-                    expirationDate
-                      ? styles.dateText
-                      : styles.placeholderText
+                    expirationDate ? styles.dateText : styles.placeholderText
                   }
                 >
-                  {expirationDate ||
-                    "Selecionar data"}
+                  {expirationDate || "Selecionar data"}
                 </Text>
               </Pressable>
 
-              <Text style={styles.label}>
-                Quantidade
-              </Text>
+              <Text style={styles.label}>Quantidade</Text>
 
               <CustomInput
                 placeholder="Ex: 2"
@@ -220,20 +168,14 @@ export default function AddProductModal({
                 onChangeText={setQuantity}
               />
 
-              <Text style={styles.label}>
-                Unidade de Medida
-              </Text>
+              <Text style={styles.label}>Unidade de Medida</Text>
 
               <SelectInput
                 placeholder="Selecione uma unidade"
                 value={unit}
-                onPress={() =>
-                  setShowUnitModal(true)
-                }
+                onPress={() => setShowUnitModal(true)}
               />
-
             </View>
-
           </ScrollView>
 
           {showDatePicker && (
@@ -241,18 +183,13 @@ export default function AddProductModal({
               value={date}
               mode="date"
               display="default"
-              onChange={(
-                _event,
-                selectedDate
-              ) => {
+              onChange={(_event, selectedDate) => {
                 setShowDatePicker(false);
 
                 if (selectedDate) {
                   setDate(selectedDate);
 
-                  setExpirationDate(
-                    formatDate(selectedDate)
-                  );
+                  setExpirationDate(formatDate(selectedDate));
                 }
               }}
             />
@@ -261,54 +198,38 @@ export default function AddProductModal({
           <CategoryModal
             visible={showCategoryModal}
             options={categories}
-            onClose={() =>
-              setShowCategoryModal(false)
-            }
+            onClose={() => setShowCategoryModal(false)}
             onSelect={setCategory}
           />
 
           <CategoryModal
             visible={showUnitModal}
             options={units}
-            onClose={() =>
-              setShowUnitModal(false)
-            }
+            onClose={() => setShowUnitModal(false)}
             onSelect={setUnit}
           />
 
           <View style={styles.footer}>
-
             <TouchableOpacity
-               onPress={() => {
-               resetForm();
-               onClose();
-             }}
-           >
-             <Text style={styles.cancel}>
-               Cancelar
-             </Text>
-           </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.saveButton}
-              onPress={handleSave}
+              onPress={() => {
+                resetForm();
+                onClose();
+              }}
             >
-              <Text style={styles.saveText}>
-                Salvar
-              </Text>
+              <Text style={styles.cancel}>Cancelar</Text>
             </TouchableOpacity>
 
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.saveText}>Salvar</Text>
+            </TouchableOpacity>
           </View>
-
         </View>
-
       </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",
@@ -408,5 +329,4 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 16,
   },
-
 });
