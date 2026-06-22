@@ -1,4 +1,4 @@
-# 🌿 EcoMida
+# EcoMida 🌿
 
 > Reduza o desperdício, organize sua alimentação e cuide do planeta. 🌍
 
@@ -6,7 +6,7 @@ O **EcoMida** é um aplicativo mobile desenvolvido para ajudar usuários a geren
 
 ---
 
-## 📱 Sobre o projeto
+## Sobre o projeto 📱
 
 O desperdício de alimentos é um problema recorrente em muitas residências. Muitas vezes, produtos são esquecidos na geladeira, despensa ou freezer e acabam vencendo antes de serem consumidos.
 
@@ -14,15 +14,15 @@ O EcoMida foi criado para facilitar a organização desses alimentos, oferecendo
 
 ---
 
-## 🎯 Objetivo
+## Objetivo 🎯
 
 O objetivo principal do EcoMida é reduzir o desperdício de alimentos e incentivar hábitos mais sustentáveis por meio de um sistema de monitoramento e organização alimentar.
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades ✨
 
-### 🔐 Autenticação
+### Autenticação 🔐
 
 * Cadastro de novos usuários
 * Login com e-mail e senha
@@ -31,7 +31,7 @@ O objetivo principal do EcoMida é reduzir o desperdício de alimentos e incenti
 * Recuperação de senha por e-mail
 * Proteção de rotas para usuários autenticados
 
-### 📦 Gerenciamento de alimentos
+### Gerenciamento de alimentos 📦
 
 * Cadastro de alimentos
 * Edição de produtos cadastrados
@@ -65,13 +65,13 @@ Status disponíveis:
 * Consumido
 * Descartado
 
-### 🔔 Notificações
+### Notificações 🔔
 
 * Alertas para produtos próximos da data de vencimento
 * Badge no ícone de notificações indicando a quantidade de alertas
 * Tela dedicada para visualização das notificações
 
-### 📚 Dicas de armazenamento
+### Dicas de armazenamento 📚
 
 * Dicas organizadas por categoria de alimento
 * Busca por título, descrição ou categoria
@@ -80,7 +80,7 @@ Status disponíveis:
 * Tela de detalhes com conteúdo completo
 * Persistência local dos favoritos
 
-### 👤 Perfil do usuário
+### Perfil do usuário 👤
 
 * Visualização de nome, e-mail e foto de perfil
 * Edição de nome e e-mail
@@ -91,7 +91,7 @@ Status disponíveis:
 
 ---
 
-## 🛠️ Tecnologias utilizadas
+## Tecnologias utilizadas 🛠️
 
 ### Frontend
 
@@ -119,7 +119,7 @@ Status disponíveis:
 
 ---
 
-## 🏛️ Arquitetura
+## Arquitetura 🏛️
 
 O projeto segue uma arquitetura organizada em camadas:
 
@@ -138,7 +138,7 @@ Tela → Hook → Serviço → Firebase
 
 ---
 
-## 🔒 Segurança
+## Segurança 🔒
 
 O EcoMida utiliza práticas de segurança para proteger os dados dos usuários:
 
@@ -151,4 +151,4 @@ O EcoMida utiliza práticas de segurança para proteger os dados dos usuários:
 
 ---
 
-## 🌍 Equipe EcoMida
+## Equipe EcoMida 🌍
