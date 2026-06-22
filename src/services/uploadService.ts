@@ -1,9 +1,15 @@
 import * as FileSystem from 'expo-file-system/legacy';
+import Constants from 'expo-constants';
 
-const CLOUD_NAME = 'dil3jhw5l'; 
-const UPLOAD_PRESET = 'profile_pictures';
+const CLOUD_NAME = Constants.expoConfig?.extra?.cloudinaryCloudName;
+const UPLOAD_PRESET = Constants.expoConfig?.extra?.cloudinaryUploadPreset;
 
 export async function uploadImageToCloudinary(uri: string): Promise<string> {
+  if (!CLOUD_NAME || !UPLOAD_PRESET) {
+    console.error('❌ Cloudinary: chaves não configuradas no .env');
+    throw new Error('Configuração do Cloudinary não encontrada');
+  }
+
   try {
     const base64 = await FileSystem.readAsStringAsync(uri, {
       encoding: FileSystem.EncodingType.Base64,
